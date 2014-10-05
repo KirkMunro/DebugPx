@@ -1,34 +1,34 @@
 <?xml version="1.0"?>
-<ModuleObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<ModuleObject xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fVersion="1.1" type="Script" mclass="Module" useSupports="false">
   <Name>DebugPx</Name>
-  <ModuleType>Script</ModuleType>
   <Version>1.0.0.0</Version>
   <Description>The DebugPx module provides a set of commands that make it easier to debug PowerShell scripts, functions and modules. These commands leverage the native debugging capabilities in PowerShell (the callstack, breakpoints, error output and the -Debug common parameter) and provide additional functionality that these features do not provide, enabling a richer debugging experience.</Description>
-  <ModuleClass>Module</ModuleClass>
-  <UseSupports>false</UseSupports>
+  <HasManifest>false</HasManifest>
   <OverridePostCount>false</OverridePostCount>
   <FetchPostCount xsi:nil="true" />
   <Cmdlets>
-    <CmdletObject>
+    <CmdletObject verb="Disable" noun="BreakpointCommand">
       <Name>Disable-BreakpointCommand</Name>
-      <Verb>Disable</Verb>
-      <Noun>BreakpointCommand</Noun>
-      <GeneralHelp />
+      <GeneralHelp>
+        <Synopsis />
+        <Description />
+        <Notes />
+        <InputType />
+        <InputUrl />
+        <InputTypeDescription />
+        <ReturnType />
+        <ReturnUrl />
+        <ReturnTypeDescription />
+      </GeneralHelp>
+      <ParamSets>
+        <CommandParameterSetInfo2 Name="__AllParameterSets" Params="Verbose Debug ErrorAction WarningAction ErrorVariable WarningVariable OutVariable OutBuffer PipelineVariable WhatIf Confirm" />
+      </ParamSets>
       <Syntax>
         <string>Disable-BreakpointCommand [-WhatIf] [-Confirm]</string>
       </Syntax>
       <Parameters>
-        <ParameterDescription>
+        <ParameterDescription type="SwitchParameter" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="false" pos="named" globbing="false">
           <Name>WhatIf</Name>
-          <Type>SwitchParameter</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>false</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>false</Positional>
-          <Position>named</Position>
           <Attributes>
             <string>System.Management.Automation.ParameterAttribute</string>
             <string>System.Management.Automation.AliasAttribute</string>
@@ -36,19 +36,11 @@
           <Aliases>
             <string>wi</string>
           </Aliases>
-          <Globbing>false</Globbing>
+          <Description />
+          <DefaultValue />
         </ParameterDescription>
-        <ParameterDescription>
+        <ParameterDescription type="SwitchParameter" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="false" pos="named" globbing="false">
           <Name>Confirm</Name>
-          <Type>SwitchParameter</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>false</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>false</Positional>
-          <Position>named</Position>
           <Attributes>
             <string>System.Management.Automation.AliasAttribute</string>
             <string>System.Management.Automation.ParameterAttribute</string>
@@ -56,63 +48,37 @@
           <Aliases>
             <string>cf</string>
           </Aliases>
-          <Globbing>false</Globbing>
+          <Description />
+          <DefaultValue />
         </ParameterDescription>
       </Parameters>
       <Examples />
       <RelatedLinks />
-      <SupportInformation>
-        <ADChecked>false</ADChecked>
-        <RsatChecked>false</RsatChecked>
-        <Ps2Checked>false</Ps2Checked>
-        <Ps3Checked>false</Ps3Checked>
-        <Ps4Checked>false</Ps4Checked>
-        <WinXpChecked>false</WinXpChecked>
-        <WinVistaChecked>false</WinVistaChecked>
-        <Win7Checked>false</Win7Checked>
-        <Win8Checked>false</Win8Checked>
-        <Win81Checked>false</Win81Checked>
-        <Win2003Checked>false</Win2003Checked>
-        <Win2003StdChecked>false</Win2003StdChecked>
-        <Win2003EEChecked>false</Win2003EEChecked>
-        <Win2003DCChecked>false</Win2003DCChecked>
-        <Win2008Checked>false</Win2008Checked>
-        <Win2008StdChecked>false</Win2008StdChecked>
-        <Win2008EEChecked>false</Win2008EEChecked>
-        <Win2008DCChecked>false</Win2008DCChecked>
-        <Win2008R2Checked>false</Win2008R2Checked>
-        <Win2008R2StdChecked>false</Win2008R2StdChecked>
-        <Win2008R2EEChecked>false</Win2008R2EEChecked>
-        <Win2008R2DCChecked>false</Win2008R2DCChecked>
-        <Win2012Checked>false</Win2012Checked>
-        <Win2012StdChecked>false</Win2012StdChecked>
-        <Win2012DCChecked>false</Win2012DCChecked>
-        <Win2012R2Checked>false</Win2012R2Checked>
-        <Win2012R2StdChecked>false</Win2012R2StdChecked>
-        <Win2012R2DCChecked>false</Win2012R2DCChecked>
-      </SupportInformation>
+      <SupportInformation ad="false" rsat="false" ps2="false" ps3="false" ps4="false" ps5="false" wxp="false" wv="false" w7="false" w8="false" w81="false" w2k3s="false" w2k3e="false" w2k3d="false" w2k8s="false" w2k8e="false" w2k8d="false" w2k8r2s="false" w2k8r2e="false" w2k8r2d="false" w2k12s="false" w2k12d="false" w2k12r2s="false" w2k12r2d="false" />
       <Publish>false</Publish>
     </CmdletObject>
-    <CmdletObject>
+    <CmdletObject verb="Enable" noun="BreakpointCommand">
       <Name>Enable-BreakpointCommand</Name>
-      <Verb>Enable</Verb>
-      <Noun>BreakpointCommand</Noun>
-      <GeneralHelp />
+      <GeneralHelp>
+        <Synopsis />
+        <Description />
+        <Notes />
+        <InputType />
+        <InputUrl />
+        <InputTypeDescription />
+        <ReturnType />
+        <ReturnUrl />
+        <ReturnTypeDescription />
+      </GeneralHelp>
+      <ParamSets>
+        <CommandParameterSetInfo2 Name="__AllParameterSets" Params="Verbose Debug ErrorAction WarningAction ErrorVariable WarningVariable OutVariable OutBuffer PipelineVariable WhatIf Confirm" />
+      </ParamSets>
       <Syntax>
         <string>Enable-BreakpointCommand [-WhatIf] [-Confirm]</string>
       </Syntax>
       <Parameters>
-        <ParameterDescription>
+        <ParameterDescription type="SwitchParameter" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="false" pos="named" globbing="false">
           <Name>WhatIf</Name>
-          <Type>SwitchParameter</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>false</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>false</Positional>
-          <Position>named</Position>
           <Attributes>
             <string>System.Management.Automation.ParameterAttribute</string>
             <string>System.Management.Automation.AliasAttribute</string>
@@ -120,19 +86,11 @@
           <Aliases>
             <string>wi</string>
           </Aliases>
-          <Globbing>false</Globbing>
+          <Description />
+          <DefaultValue />
         </ParameterDescription>
-        <ParameterDescription>
+        <ParameterDescription type="SwitchParameter" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="false" pos="named" globbing="false">
           <Name>Confirm</Name>
-          <Type>SwitchParameter</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>false</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>false</Positional>
-          <Position>named</Position>
           <Attributes>
             <string>System.Management.Automation.AliasAttribute</string>
             <string>System.Management.Automation.ParameterAttribute</string>
@@ -140,47 +98,17 @@
           <Aliases>
             <string>cf</string>
           </Aliases>
-          <Globbing>false</Globbing>
+          <Description />
+          <DefaultValue />
         </ParameterDescription>
       </Parameters>
       <Examples />
       <RelatedLinks />
-      <SupportInformation>
-        <ADChecked>false</ADChecked>
-        <RsatChecked>false</RsatChecked>
-        <Ps2Checked>false</Ps2Checked>
-        <Ps3Checked>false</Ps3Checked>
-        <Ps4Checked>false</Ps4Checked>
-        <WinXpChecked>false</WinXpChecked>
-        <WinVistaChecked>false</WinVistaChecked>
-        <Win7Checked>false</Win7Checked>
-        <Win8Checked>false</Win8Checked>
-        <Win81Checked>false</Win81Checked>
-        <Win2003Checked>false</Win2003Checked>
-        <Win2003StdChecked>false</Win2003StdChecked>
-        <Win2003EEChecked>false</Win2003EEChecked>
-        <Win2003DCChecked>false</Win2003DCChecked>
-        <Win2008Checked>false</Win2008Checked>
-        <Win2008StdChecked>false</Win2008StdChecked>
-        <Win2008EEChecked>false</Win2008EEChecked>
-        <Win2008DCChecked>false</Win2008DCChecked>
-        <Win2008R2Checked>false</Win2008R2Checked>
-        <Win2008R2StdChecked>false</Win2008R2StdChecked>
-        <Win2008R2EEChecked>false</Win2008R2EEChecked>
-        <Win2008R2DCChecked>false</Win2008R2DCChecked>
-        <Win2012Checked>false</Win2012Checked>
-        <Win2012StdChecked>false</Win2012StdChecked>
-        <Win2012DCChecked>false</Win2012DCChecked>
-        <Win2012R2Checked>false</Win2012R2Checked>
-        <Win2012R2StdChecked>false</Win2012R2StdChecked>
-        <Win2012R2DCChecked>false</Win2012R2DCChecked>
-      </SupportInformation>
+      <SupportInformation ad="false" rsat="false" ps2="false" ps3="false" ps4="false" ps5="false" wxp="false" wv="false" w7="false" w8="false" w81="false" w2k3s="false" w2k3e="false" w2k3d="false" w2k8s="false" w2k8e="false" w2k8d="false" w2k8r2s="false" w2k8r2e="false" w2k8r2d="false" w2k12s="false" w2k12d="false" w2k12r2s="false" w2k12r2d="false" />
       <Publish>false</Publish>
     </CmdletObject>
-    <CmdletObject>
+    <CmdletObject verb="Invoke" noun="IfDebug">
       <Name>Invoke-IfDebug</Name>
-      <Verb>Invoke</Verb>
-      <Noun>IfDebug</Noun>
       <GeneralHelp>
         <Synopsis>Invokes a series of commands when in debug mode and sends any output those commands generate to the debug stream.</Synopsis>
         <Description>The ifdebug command invokes a series of commands when in debug mode and sends any output that those commands generate to the debug stream.
@@ -196,27 +124,25 @@ While this design worked for PowerShell 1.0, it is fundamentally flawed in Power
 
 A better use case for -Debug would be to provide additional output that is useful when troubleshooting issues with a command, including object data that would normally not be output and that would make even a Verbose stream look busy. Unlike Verbose output, which is usually descriptive, Debug output is more often not, and it is only helpful to a command author when troubleshooting issues. The ifdebug command solves this need by providing a script block that will only be invoked if the command is either invoked with -Debug or if the $DebugPreference variable in a scope where the command is invoked is set to any value other than SilentlyContinue or Ignore. In these scenarios, $DebugPreference is set to Continue before the DebugScript is invoked, all output generated by the DebugScript is written to the Debug stream, and then $DebugPreference is set back to its original value once the DebugScript has completed. With this model, there is no need to remove an ifdebug command invocation from a script when it comes time to release it to customers.</Notes>
         <InputType>System.Management.Automation.PSObject</InputType>
+        <InputUrl />
+        <InputTypeDescription />
         <ReturnType>System.Management.Automation.PSObject</ReturnType>
+        <ReturnUrl />
+        <ReturnTypeDescription />
       </GeneralHelp>
+      <ParamSets>
+        <CommandParameterSetInfo2 Name="__AllParameterSets" Params="DebugScript InputObject Verbose Debug ErrorAction WarningAction ErrorVariable WarningVariable OutVariable OutBuffer PipelineVariable" />
+      </ParamSets>
       <Syntax>
         <string>Invoke-IfDebug [-DebugScript] &lt;ScriptBlock&gt; [-InputObject &lt;PSObject&gt;]</string>
       </Syntax>
       <Parameters>
-        <ParameterDescription>
+        <ParameterDescription type="ScriptBlock" varLen="false" required="true" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="true" pos="0" globbing="false">
           <Name>DebugScript</Name>
-          <Type>ScriptBlock</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>true</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>false</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>true</Positional>
-          <Position>0</Position>
           <Attributes>
+            <string>System.Management.Automation.AliasAttribute</string>
             <string>System.Management.Automation.ValidateNotNullAttribute</string>
             <string>System.Management.Automation.ParameterAttribute</string>
-            <string>System.Management.Automation.AliasAttribute</string>
           </Attributes>
           <Aliases>
             <string>ScriptBlock</string>
@@ -225,33 +151,24 @@ A better use case for -Debug would be to provide additional output that is usefu
           <Description>The script block that will be invoked when debug mode is enabled.
 
 When the ifdebug command is used in a pipeline, you can use the $_ or $PSItem variables to reference the current item that was just received from the previous stage in the pipeline.</Description>
-          <Globbing>false</Globbing>
+          <DefaultValue />
         </ParameterDescription>
-        <ParameterDescription>
+        <ParameterDescription type="PSObject" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="true" pipeProp="false" isPos="false" pos="named" globbing="false">
           <Name>InputObject</Name>
-          <Type>PSObject</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>true</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>false</Positional>
-          <Position>named</Position>
           <Attributes>
-            <string>System.Management.Automation.ValidateNotNullAttribute</string>
             <string>System.Management.Automation.ParameterAttribute</string>
+            <string>System.Management.Automation.ValidateNotNullAttribute</string>
           </Attributes>
           <Aliases />
           <Description>The object that was input to the command, either by value (using this parameter) or through the pipeline.
 
 When ifdebug is invoked while debug mode is disabled, input objects will be passed directly through to the next stage in the pipeline without any additional processing.</Description>
-          <Globbing>false</Globbing>
+          <DefaultValue />
         </ParameterDescription>
       </Parameters>
       <Examples>
         <Example>
-          <Name>Example 1</Name>
+          <Name>EXAMPLE 1</Name>
           <Cmd>PS C:\&gt; function Test-Debug {
 &gt;&gt;     [CmdletBinding()]
 &gt;&gt;     param()
@@ -267,70 +184,41 @@ PS C:\&gt; Test-Debug -Debug</Cmd>
         </Example>
       </Examples>
       <RelatedLinks />
-      <SupportInformation>
-        <ADChecked>false</ADChecked>
-        <RsatChecked>false</RsatChecked>
-        <Ps2Checked>false</Ps2Checked>
-        <Ps3Checked>false</Ps3Checked>
-        <Ps4Checked>false</Ps4Checked>
-        <WinXpChecked>false</WinXpChecked>
-        <WinVistaChecked>false</WinVistaChecked>
-        <Win7Checked>false</Win7Checked>
-        <Win8Checked>false</Win8Checked>
-        <Win81Checked>false</Win81Checked>
-        <Win2003Checked>false</Win2003Checked>
-        <Win2003StdChecked>false</Win2003StdChecked>
-        <Win2003EEChecked>false</Win2003EEChecked>
-        <Win2003DCChecked>false</Win2003DCChecked>
-        <Win2008Checked>false</Win2008Checked>
-        <Win2008StdChecked>false</Win2008StdChecked>
-        <Win2008EEChecked>false</Win2008EEChecked>
-        <Win2008DCChecked>false</Win2008DCChecked>
-        <Win2008R2Checked>false</Win2008R2Checked>
-        <Win2008R2StdChecked>false</Win2008R2StdChecked>
-        <Win2008R2EEChecked>false</Win2008R2EEChecked>
-        <Win2008R2DCChecked>false</Win2008R2DCChecked>
-        <Win2012Checked>false</Win2012Checked>
-        <Win2012StdChecked>false</Win2012StdChecked>
-        <Win2012DCChecked>false</Win2012DCChecked>
-        <Win2012R2Checked>false</Win2012R2Checked>
-        <Win2012R2StdChecked>false</Win2012R2StdChecked>
-        <Win2012R2DCChecked>false</Win2012R2DCChecked>
-      </SupportInformation>
+      <SupportInformation ad="false" rsat="false" ps2="false" ps3="false" ps4="false" ps5="false" wxp="false" wv="false" w7="false" w8="false" w81="false" w2k3s="false" w2k3e="false" w2k3d="false" w2k8s="false" w2k8e="false" w2k8d="false" w2k8r2s="false" w2k8r2e="false" w2k8r2d="false" w2k12s="false" w2k12d="false" w2k12r2s="false" w2k12r2d="false" />
       <Publish>false</Publish>
     </CmdletObject>
-    <CmdletObject>
-      <Name>Suspend-Execution</Name>
-      <Verb>Suspend</Verb>
-      <Noun>Execution</Noun>
+    <CmdletObject verb="Enter" noun="Debugger">
+      <Name>Enter-Debugger</Name>
       <GeneralHelp>
-        <Synopsis>Suspends the execution of the running script or command at a breakpoint.</Synopsis>
-        <Description>The breakpoint command suspends the execution of the running script or command at a breakpoint.
+        <Synopsis>Enters the debugger by triggering a breakpoint at the current location.</Synopsis>
+        <Description>The breakpoint command enters the debugger by triggering a breakpoint at the current location, whether that location be in a script file or in an interactive prompt.
 
-Without the ConditionScript parameter, the breakpoint command will suspend the execution of the running script or command at a breakpoint where it is invoked. You can also use the breakpoint command to conditionally suspend the execution of the running script or command by providing an expression in the ConditionScript parameter. If the ConditionScript parameter evaluates to True, then the execution will be suspended at a breakpoint. If the ConditionScript parameter evaluates to False, then execution will continue beyond the breakpoint command.
+Without the ConditionScript parameter, the breakpoint command will enter the debugger by triggering a breakpoint where it is invoked. You can also use the breakpoint command to conditionally enter the debugger by providing an expression in the ConditionScript parameter. If the ConditionScript parameter evaluates to True, then the execution will be suspended at a breakpoint. If the ConditionScript parameter evaluates to False, then execution will continue beyond the breakpoint command.
 
 You can use the breakpoint command in a pipeline. If the breakpoint command is used in a pipeline, it will break for each object that it receives from the previous stage in the pipeline, conditionally if the ConditionScript parameter is used. If the breakpoint command is disabled, the object will be passed down the pipeline to the next stage, allowing breakpoint commands to be left in place while you disable or enable them as required when developing your PowerShell solutions.
 
-You can enable or disable this feature at any time by invoking either the Enable-BreakpointCommand or Disable-BreakpointCommand commands.</Description>
-        <Notes>It is recommended that the breakpoint alias be used in place of Suspend-Execution because it more clearly indicates the intent of the command. This is an exception to the normal rule recommendation to use command names in place of aliases in scripts; however, all breakpoint command invocations should be removed from scripts before they are officially released, so that shouldn't be an issue.</Notes>
+When you are setting breakpoints with more complex conditions or for more rare scenarios such as intermittent issues that you can't put your finger on, it can be helpful to know more context about those breakpoints when they are hit. For these situations, you can specify a message that you want written directly to the host using the Message parameter. The message you provide will be output to the host just before PowerShell enters the debugger, but only if the breakpoint condition passes.
+
+You can enable or disable the breakpoint command at any time by invoking either the Enable-BreakpointCommand or Disable-BreakpointCommand commands.
+
+The breakpoint command will not cause PowerShell to enter the debugger unless the current process is interactive.</Description>
+        <Notes>It is recommended that the breakpoint alias be used in place of Enter-Debugger because it more clearly indicates the intent of the command. This is an exception to the normal rule recommendation to use command names in place of aliases in scripts; however, all breakpoint command invocations should be removed from scripts before they are officially released, so that shouldn't be an issue.</Notes>
         <InputType>System.Management.Automation.PSObject</InputType>
+        <InputUrl />
+        <InputTypeDescription />
         <ReturnType>System.Management.Automation.PSObject</ReturnType>
+        <ReturnUrl />
+        <ReturnTypeDescription />
       </GeneralHelp>
+      <ParamSets>
+        <CommandParameterSetInfo2 Name="__AllParameterSets" Params="ConditionScript Message InputObject Verbose Debug ErrorAction WarningAction ErrorVariable WarningVariable OutVariable OutBuffer PipelineVariable" />
+      </ParamSets>
       <Syntax>
-        <string>Suspend-Execution [[-ConditionScript] &lt;ScriptBlock&gt;] [-InputObject &lt;PSObject&gt;]</string>
+        <string>Enter-Debugger [[-ConditionScript] &lt;ScriptBlock&gt;] [-Message &lt;String&gt;] [-InputObject &lt;PSObject&gt;]</string>
       </Syntax>
       <Parameters>
-        <ParameterDescription>
+        <ParameterDescription type="ScriptBlock" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="true" pos="0" globbing="false">
           <Name>ConditionScript</Name>
-          <Type>ScriptBlock</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>false</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>true</Positional>
-          <Position>0</Position>
           <Attributes>
             <string>System.Management.Automation.AliasAttribute</string>
             <string>System.Management.Automation.ParameterAttribute</string>
@@ -340,88 +228,69 @@ You can enable or disable this feature at any time by invoking either the Enable
             <string>ScriptBlock</string>
             <string>sb</string>
           </Aliases>
-          <Description>The condition under which script execution will be suspended at the current location.
+          <Description>The condition under which PowerShell will enter the debugger at a breakpoint at the current location.
 
 When the breakpoint command is used in a pipeline, you can use the $_ or $PSItem variables to reference the current item that was just received from the previous stage in the pipeline.</Description>
           <DefaultValue>{$true}</DefaultValue>
-          <Globbing>false</Globbing>
         </ParameterDescription>
-        <ParameterDescription>
+        <ParameterDescription type="PSObject" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="true" pipeProp="false" isPos="false" pos="named" globbing="false">
           <Name>InputObject</Name>
-          <Type>PSObject</Type>
-          <AcceptsArray>false</AcceptsArray>
-          <Mandatory>false</Mandatory>
-          <Dynamic>false</Dynamic>
-          <RemainingArgs>false</RemainingArgs>
-          <Pipeline>true</Pipeline>
-          <PipelinePropertyName>false</PipelinePropertyName>
-          <Positional>false</Positional>
-          <Position>named</Position>
           <Attributes>
-            <string>System.Management.Automation.ValidateNotNullAttribute</string>
             <string>System.Management.Automation.ParameterAttribute</string>
+            <string>System.Management.Automation.ValidateNotNullAttribute</string>
           </Attributes>
           <Aliases />
           <Description>The object that was input to the command, either by value (using this parameter) or through the pipeline.
 
 If the breakpoint command is disabled when it is invoked in a pipeline, input objects will be passed directly through to the next stage in the pipeline without any additional processing.</Description>
-          <Globbing>false</Globbing>
+          <DefaultValue />
+        </ParameterDescription>
+        <ParameterDescription type="String" varLen="false" required="false" dynamic="false" pipeRemaining="false" pipe="false" pipeProp="false" isPos="false" pos="named" globbing="false">
+          <Name>Message</Name>
+          <Attributes>
+            <string>System.Management.Automation.ValidateNotNullOrEmptyAttribute</string>
+            <string>System.Management.Automation.ParameterAttribute</string>
+          </Attributes>
+          <Aliases />
+          <Description>A message that you want output to the host when the breakpoint is triggered.</Description>
+          <DefaultValue />
         </ParameterDescription>
       </Parameters>
       <Examples>
         <Example>
-          <Name>Example 1</Name>
+          <Name>EXAMPLE 1</Name>
           <Cmd>PS C:\&gt; Get-Service w* | breakpoint {$_.Name -eq 'wuauserv'} | Select-Object -ExpandProperty Name</Cmd>
-          <Description>If the breakpoint command is enabled (it is enabled by default), this command will get a list of names of services whose name starts with "w". When the Windows Update service is received by the breakpoint command, the PowerShell debugger will suspend execution at that breakpoint. The name of that service, and any remaining services, will be output to the console when the debugger is used to either step or to resume execution.</Description>
+          <Description>If the breakpoint command is enabled (it is enabled by default), this command will get a list of names of services whose name starts with "w". When the Windows Update service is received by the breakpoint command, Windows PowerShell will enter the debugger at that breakpoint. The name of that service, and any remaining services, will be output to the console when the debugger is used to either step or to resume execution.</Description>
         </Example>
         <Example>
-          <Name>Example 2</Name>
+          <Name>EXAMPLE 2</Name>
           <Cmd>PS C:\&gt; &amp; {
 &gt;&gt;     'Before breakpoint'
 &gt;&gt;     breakpoint
 &gt;&gt;     'After breakpoint'
 &gt;&gt; }</Cmd>
-          <Description>This command will output the text "Before breakpoint" to the console. Then, when the breakpoint command is invoked, if the breakpoint command is enabled (the default), the PowerShell debugger will immediately suspend execution at the breakpoint command. The text "After breakpoint" will be output to the console when the debugger is used to step or to continue execution of the command.</Description>
+          <Description>This command will output the text "Before breakpoint" to the console. Then, when the breakpoint command is invoked, if the breakpoint command is enabled (the default), Windows PowerShell will enter the debugger at the breakpoint command. The text "After breakpoint" will be output to the console when the debugger is used to step or to continue execution of the command.</Description>
+        </Example>
+        <Example>
+          <Name>EXAMPLE 3</Name>
+          <Cmd>PS C:\&gt; breakpoint {
+&gt;&gt;     $service = Get-Service wuauserv
+&gt;&gt;     $service.Status -eq 'Stopped'
+&gt;&gt; } -Message "The Windows Update service has stopped! How did this happen?"</Cmd>
+          <Description>This command causes PowerShell to enter the debugger at a breakpoint on that command, but only if the Windows Update service is in a stopped state. When PowerShell enters the debugger, the message "The Windows Update service has stopped! How did this happen?" will be written directly to the host. These messages may help understand what condition you are watching for on conditional breakpoints in more complex scripting scenarios.</Description>
         </Example>
       </Examples>
       <RelatedLinks>
         <RelatedLink>
           <LinkText>Disable-BreakpointCommand</LinkText>
+          <LinkUrl />
         </RelatedLink>
         <RelatedLink>
           <LinkText>Enable-BreakpointCommand</LinkText>
+          <LinkUrl />
         </RelatedLink>
       </RelatedLinks>
-      <SupportInformation>
-        <ADChecked>false</ADChecked>
-        <RsatChecked>false</RsatChecked>
-        <Ps2Checked>false</Ps2Checked>
-        <Ps3Checked>false</Ps3Checked>
-        <Ps4Checked>false</Ps4Checked>
-        <WinXpChecked>false</WinXpChecked>
-        <WinVistaChecked>false</WinVistaChecked>
-        <Win7Checked>false</Win7Checked>
-        <Win8Checked>false</Win8Checked>
-        <Win81Checked>false</Win81Checked>
-        <Win2003Checked>false</Win2003Checked>
-        <Win2003StdChecked>false</Win2003StdChecked>
-        <Win2003EEChecked>false</Win2003EEChecked>
-        <Win2003DCChecked>false</Win2003DCChecked>
-        <Win2008Checked>false</Win2008Checked>
-        <Win2008StdChecked>false</Win2008StdChecked>
-        <Win2008EEChecked>false</Win2008EEChecked>
-        <Win2008DCChecked>false</Win2008DCChecked>
-        <Win2008R2Checked>false</Win2008R2Checked>
-        <Win2008R2StdChecked>false</Win2008R2StdChecked>
-        <Win2008R2EEChecked>false</Win2008R2EEChecked>
-        <Win2008R2DCChecked>false</Win2008R2DCChecked>
-        <Win2012Checked>false</Win2012Checked>
-        <Win2012StdChecked>false</Win2012StdChecked>
-        <Win2012DCChecked>false</Win2012DCChecked>
-        <Win2012R2Checked>false</Win2012R2Checked>
-        <Win2012R2StdChecked>false</Win2012R2StdChecked>
-        <Win2012R2DCChecked>false</Win2012R2DCChecked>
-      </SupportInformation>
+      <SupportInformation ad="false" rsat="false" ps2="false" ps3="false" ps4="false" ps5="false" wxp="false" wv="false" w7="false" w8="false" w81="false" w2k3s="false" w2k3e="false" w2k3d="false" w2k8s="false" w2k8e="false" w2k8d="false" w2k8r2s="false" w2k8r2e="false" w2k8r2d="false" w2k12s="false" w2k12d="false" w2k12r2s="false" w2k12r2d="false" />
       <Publish>false</Publish>
     </CmdletObject>
   </Cmdlets>

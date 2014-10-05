@@ -21,8 +21,7 @@ license folder that is included in the DebugPx module. If not, see
 <https://www.gnu.org/licenses/gpl.html>.
 #############################################################################>
 
-# This script should only be invoked when you want to download the latest
-# version of DebugPx from the GitHub page where it is hosted.
+# This script should only be invoked when you want to uninstall DebugPx.
 
 [CmdletBinding(SupportsShouldProcess=$true)]
 [OutputType([System.Void])]
@@ -39,8 +38,8 @@ try {
     if ($module -is [System.Array]) {
         [System.String]$message = 'More than one version of DebugPx is installed on this system. This is not supported. Manually remove the versions you are not using and then try again.'
         [System.Management.Automation.SessionStateException]$exception = New-Object -TypeName System.Management.Automation.SessionStateException -ArgumentList $message
-        [System.Management.Automation.ErrorRecord]$errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception,'SessionStateException',([System.Management.Automation.ErrorCategory]::InvalidOperation),'Uninstall-DebugPxModule'
-        $PSCmdlet.ThrowTerminatingError($errorRecord)
+        [System.Management.Automation.ErrorRecord]$errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception,'SessionStateException',([System.Management.Automation.ErrorCategory]::InvalidOperation),$module
+        throw $errorRecord
     }
 
     #endregion
@@ -62,13 +61,15 @@ try {
     #region Now remove the persistent data for the module if the caller requested it.
 
     if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey('RemovePersistentData') -and $RemovePersistentData) {
-        $moduleConfigFolder = Join-Path -Path ([System.Environment]::GetFolderPath('ApplicationData')) -ChildPath PoshoholicStudios\DebugPx
-        if (Test-Path -LiteralPath $moduleConfigFolder) {
-            Remove-Item -LiteralPath $moduleConfigFolder -Recurse -Force -ErrorAction Stop
+        foreach ($mlsRoot in $env:LocalAppData,$env:ProgramData) {
+            $mlsPath = Join-Path -Path $mlsRoot -ChildPath "WindowsPowerShell\Modules\$($module.Name)"
+            if (Test-Path -LiteralPath $mlsPath) {
+                Remove-Item -LiteralPath $mlsPath -Recurse -Force -ErrorAction Stop
+            }
         }
     }
 
     #endregion
 } catch {
-    throw
+    $PSCmdlet.ThrowTerminatingError($_)
 }

@@ -35,7 +35,7 @@ license folder that is included in the DebugPx module. If not, see
 .OUTPUTS
     None
 .NOTES
-    When the breakpoint command is enabled, invoking breakpoint, bp, or Suspend-Execution may result in a script that is running stopping on a breakpoint on that line. For more information, invoke Get-Help breakpoint.
+    When the breakpoint command is enabled, invoking breakpoint, bp, or Enter-Debugger may result in a script that is running stopping on a breakpoint on that line. For more information, invoke Get-Help breakpoint.
 .EXAMPLE
     PS C:\> Enable-BreakpointCommand
     PS C:\> Get-Service w* | breakpoint {$_.Name -eq 'wuauserv'} | Select-Object -ExpandProperty Name

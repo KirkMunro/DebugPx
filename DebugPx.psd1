@@ -24,7 +24,7 @@ license folder that is included in the DebugPx module. If not, see
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.0'
+        ModuleVersion = '1.0.0.1'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -47,8 +47,8 @@ license folder that is included in the DebugPx module. If not, see
                         )
 
       CmdletsToExport = @(
+                        'Enter-Debugger'
                         'Invoke-IfDebug'
-                        'Suspend-Execution'
                         )
 
     FunctionsToExport = @(

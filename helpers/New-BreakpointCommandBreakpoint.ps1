@@ -28,20 +28,20 @@ function New-BreakpointCommandBreakpoint {
     try {
         #region Create a new breakpoint that will activate when the breakpoint command is invoked.
 
-        # This also activates when the bp command or the Suspend-Execution command are invoked.
+        # This also activates when the bp command or the Enter-Debugger command are invoked.
         $breakpoint = Set-PSBreakpoint -Command breakpoint -Action {
             [System.Diagnostics.DebuggerHidden()]
             param()
-            if ([DebugPx.SuspendExecutionCommand]::BreakpointConditionMet) {
+            if ([DebugPx.EnterDebuggerCommand]::BreakpointConditionMet) {
                 break
             }
         }
 
         #endregion
 
-        #region Set the breakpoint that will be monitored by the Suspend-Execution command.
+        #region Set the breakpoint that will be monitored by the Enter-Debugger command.
 
-        [DebugPx.SuspendExecutionCommand]::SetBreakpoint($breakpoint -as [System.Management.Automation.CommandBreakpoint])
+        [DebugPx.EnterDebuggerCommand]::SetBreakpoint($breakpoint -as [System.Management.Automation.CommandBreakpoint])
 
         #endregion
 

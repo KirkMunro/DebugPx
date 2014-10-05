@@ -22,14 +22,14 @@ license folder that is included in the DebugPx module. If not, see
 #############################################################################>
 
 # Export the cmdlets that are defined in the nested module
-Export-ModuleMember -Cmdlet Invoke-IfDebug,Suspend-Execution
+Export-ModuleMember -Cmdlet Invoke-IfDebug,Enter-Debugger
 
 # Define an ifdebug alias so that using conditional debug blocks is more natural.
 Set-Alias -Force -Name ifdebug -Value Invoke-IfDebug
 Export-ModuleMember -Alias ifdebug
 
 # Define a breakpoint alias so that setting breakpoints is more natural.
-Set-Alias -Force -Name breakpoint -Value Suspend-Execution
+Set-Alias -Force -Name breakpoint -Value Enter-Debugger
 Export-ModuleMember -Alias breakpoint
 
 # Define a bp alias so that setting breakpoints is even easier.

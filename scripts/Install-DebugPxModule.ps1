@@ -57,8 +57,8 @@ try {
     if ($module -is [System.Array]) {
         [System.String]$message = 'More than one version of DebugPx is installed on this system. Manually remove the old versions and then try again.'
         [System.Management.Automation.SessionStateException]$exception = New-Object -TypeName System.Management.Automation.SessionStateException -ArgumentList $message
-        [System.Management.Automation.ErrorRecord]$errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception,'SessionStateException',([System.Management.Automation.ErrorCategory]::InvalidOperation),'Install-DebugPxModule'
-        $PSCmdlet.ThrowTerminatingError($errorRecord)
+        [System.Management.Automation.ErrorRecord]$errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList $exception,'SessionStateException',([System.Management.Automation.ErrorCategory]::InvalidOperation),$module
+        throw $errorRecord
     }
 
     #endregion
@@ -110,8 +110,8 @@ try {
 
     Write-Progress -Activity 'Installing DebugPx' -Status 'Downloading the latest version of DebugPx.'
     $zipFilePath = Join-Path -Path $modulesFolder -ChildPath DebugPx.zip
-    $wc = New-Object -TypeName System.Net.WebClient
-    $wc.DownloadFile('https://github.com/KirkMunro/DebugPx/zipball/release',$zipFilePath)
+    $response = Invoke-WebRequest -Uri https://github.com/KirkMunro/DebugPx/zipball/release -ErrorAction Stop
+    [System.IO.File]::WriteAllBytes($zipFilePath, $response.Content)
     Unblock-File -LiteralPath $zipFilePath -ErrorAction Stop
 
     #endregion
@@ -179,5 +179,5 @@ try {
 
     #endregion
 } catch {
-    throw
+    $PSCmdlet.ThrowTerminatingError($_)
 }

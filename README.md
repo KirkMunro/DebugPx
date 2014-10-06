@@ -14,7 +14,6 @@ these features do not provide, enabling a richer debugging experience.
 
 PowerShell 3.0
 SnippetPx module
-TypePx module
 
 ### License and Copyright
 

@@ -10,6 +10,12 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
+### Minimum requirements
+
+PowerShell 3.0
+SnippetPx module
+TypePx module
+
 ### License and Copyright
 
 Copyright (c) 2014 Kirk Munro.

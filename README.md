@@ -12,8 +12,8 @@ these features do not provide, enabling a richer debugging experience.
 
 ### Minimum requirements
 
-PowerShell 3.0
-SnippetPx module
+- PowerShell 3.0
+- SnippetPx module
 
 ### License and Copyright
 

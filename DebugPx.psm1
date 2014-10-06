@@ -52,7 +52,7 @@ Invoke-Snippet -Name ScriptFile.Import -Parameters @{
 #region Define the breakpoints that are used by this module.
 
 $Breakpoint = @{
-    Statement = New-BreakpointCommandBreakpoint
+    Command = New-BreakpointCommandBreakpoint
 }
 
 #endregion

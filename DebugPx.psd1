@@ -24,7 +24,7 @@ license folder that is included in the DebugPx module. If not, see
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.1'
+        ModuleVersion = '1.0.0.2'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -77,4 +77,14 @@ license folder that is included in the DebugPx module. If not, see
                         'scripts\Install-DebugPxModule.ps1'
                         'scripts\Uninstall-DebugPxModule.ps1'
                         )
+
+          PrivateData = @{
+                            PSData = @{
+                                Tags = 'breakpoint debug debugger write-debug set-psbreakpoint'
+                                LicenseUri = 'http://www.gnu.org/licenses/gpl-3.0.html'
+                                ProjectUri = 'https://github.com/KirkMunro/DebugPx'
+                                IconUri = ''
+                                ReleaseNotes = ''
+                            }
+                        }
 }

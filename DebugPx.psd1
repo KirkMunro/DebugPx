@@ -24,7 +24,7 @@ license folder that is included in the DebugPx module. If not, see
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.1'
+        ModuleVersion = '1.0.0.2'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -77,12 +77,22 @@ license folder that is included in the DebugPx module. If not, see
                         'scripts\Install-DebugPxModule.ps1'
                         'scripts\Uninstall-DebugPxModule.ps1'
                         )
+
+          PrivateData = @{
+                            PSData = @{
+                                Tags = 'breakpoint debug debugger write-debug set-psbreakpoint'
+                                LicenseUri = 'http://www.gnu.org/licenses/gpl-3.0.html'
+                                ProjectUri = 'https://github.com/KirkMunro/DebugPx'
+                                IconUri = ''
+                                ReleaseNotes = ''
+                            }
+                        }
 }
 # SIG # Begin signature block
 # MIIZIAYJKoZIhvcNAQcCoIIZETCCGQ0CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUpxT8ve2DmjoujF4PisreJoQM
-# kFagghRWMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQULaSCGxjk4g4Tr9Z129EerV1a
+# F+WgghRWMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -195,23 +205,23 @@ license folder that is included in the DebugPx module. If not, see
 # aWdpY2VydC5jb20xLjAsBgNVBAMTJURpZ2lDZXJ0IEFzc3VyZWQgSUQgQ29kZSBT
 # aWduaW5nIENBLTECEA3/99JYTi+N6amVWfXCcCMwCQYFKw4DAhoFAKB4MBgGCisG
 # AQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQw
-# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFP8K
-# 4haim8zzlCTHLeonmZ3OPhwVMA0GCSqGSIb3DQEBAQUABIIBAFgXJXfa4HpSW19T
-# 6o1M+dohGVZCj0X8TpIuoHJ3rGrTy7pvyxrXc/mc0zfIv2+dk/Xzh6gp5SvcHUnR
-# RbpAD/wKU0McYRsuWh+uLTW7ZfuxofbKr9ZtwNozQHI+yam1jlpNdPc9aHR549Oc
-# mNt88HxRnek1mbPjBTFwfQNmEBpwSDsiTiiC/AErTw2xb5QbkiH+vB9d1S/C8vnF
-# +VM9fdaKZfhg9+bEopaE7dTvWw+DUiOL6EiBGu80Cf/k2DzhnXEs4oxaQbeZikTz
-# eJL01/vMqg7n8dCP+tiNT25knEaJzna0u2Y4R72tht4C9LUAtshUWwKCIlDZ1WoR
-# 1XqACX+hggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQG
+# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFL79
+# iQL6HeHr5IJrG8JqTZUQfHCPMA0GCSqGSIb3DQEBAQUABIIBAEvFGi3ncClazz50
+# Q7g4JlkyVassM/OTWSYiKSMIUtwIOGtHhRJAT0nVLSate434CVj1w0wDScOiPgAN
+# VnefWPaMrfHAQ/2npdyk+JoyqxCMMBHqbd/eeomDQyyjZIUkQJprRCSJHNm0zD6z
+# HT/msh0QEYsWD0tMegScLtlvCL8/lnXDvyv4YIkprv1oyKYoSzwEvjEnTNBT/wYt
+# DgFfm9CqrSabdNTNyeCvmg5P6HBwwaVqJTLKN+9VsAfYqtcgovm2B5sXwzKWYNhW
+# 46Eb8+xcvPKuz4twlSQ7MT8CKeWpYIZbjICsGvzAe8ei2zBsuT4VFukacxq5p08e
+# h7qjD4OhggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQG
 # EwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29ycG9yYXRpb24xMDAuBgNVBAMTJ1N5
 # bWFudGVjIFRpbWUgU3RhbXBpbmcgU2VydmljZXMgQ0EgLSBHMgIQDs/0OMj+vzVu
 # BNhqmBsaUDAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-# BgkqhkiG9w0BCQUxDxcNMTQxMDA2MDMwNDU4WjAjBgkqhkiG9w0BCQQxFgQUDZCg
-# 7kDeTSAWhBS+VkYFe7R3y68wDQYJKoZIhvcNAQEBBQAEggEAfPmQeSgsgcuiGU3M
-# Q4xh627FfAmQUkxUokA82KWe6yp4ym8hokqhq0CpF1W9k1SOGMDc9w8BCxyg6uWS
-# gIyi6S3H8ys+A/KUQxApO/rBdY7f8jCEXcHt3ivs12DeNIkIOZOmkz7FA8wyGeW0
-# 048++Upy7p5jiaPVi94JO0tZBwRUCWFGJ9wVr0ehox9HzoU9MS0YmZ8/PVCMgZRQ
-# gUOBnmUvrz9HrgrJORUdTfnFEYUJyAAPuMq+y6RAselTZnIvQwGL2yGTFEGkffoS
-# I7D/+3mnPhltxUB775U6byEcNQ1ssjSHGfaG4+BCjNbiJ8LR2LxT8vanGB7u+6j8
-# xyFJhQ==
+# BgkqhkiG9w0BCQUxDxcNMTQxMDA5MTk1NzMyWjAjBgkqhkiG9w0BCQQxFgQUjt31
+# sPoYLzFDZiGEwXpxRAMtyRgwDQYJKoZIhvcNAQEBBQAEggEAidEPb1ybP/WYWCa8
+# c1MMJckV3uh3Re4mPbwPJnNaQJAX8ZmtoQSH8Ul1ig+/gGZEs+C/ETvVYIzfzhPG
+# jk32Y6d3YSVXeOL0Ok66CKjEBcbKJ85uW9hHClaHPRuez8nDbBMXysEUD8Q19Sr8
+# fdDfjTtnyvZjDZ4lPYipqFM7VwWcPrp55K1J+f2PmPU7nXOFcSgJTl7hv+gSYiV6
+# jAH/QyZdONma1bl1ZUxGQ/x1hZ0uAYqT/XUodjJz2JjnLSfYWy5xcrjG+X7UxZ7z
+# X4J1IwtM8CRwUwuezKRZPKHQpiPWr7jDAuTJN8vkPk4lHKNYnGc6Xl/5WAFPtyl9
+# pqoCgQ==
 # SIG # End signature block

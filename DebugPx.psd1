@@ -1,30 +1,29 @@
-<#############################################################################
+ï»¿<#############################################################################
 The DebugPx module provides a set of commands that make it easier to debug
 PowerShell scripts, functions and modules. These commands leverage the native
 debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright © 2014 Kirk Munro.
+Copyright 2014 Kirk Munro
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-You should have received a copy of the GNU General Public License in the
-license folder that is included in the DebugPx module. If not, see
-<https://www.gnu.org/licenses/gpl.html>.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 #############################################################################>
 
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.2'
+        ModuleVersion = '1.0.0.3'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -32,7 +31,7 @@ license folder that is included in the DebugPx module. If not, see
 
           CompanyName = 'Poshoholic Studios'
 
-            Copyright = '© 2014 Kirk Munro'
+            Copyright = 'Copyright 2014 Kirk Munro'
 
           Description = 'The DebugPx module provides a set of commands that make it easier to debug PowerShell scripts, functions and modules. These commands leverage the native debugging capabilities in PowerShell (the callstack, breakpoints, error output and the -Debug common parameter) and provide additional functionality that these features do not provide, enabling a richer debugging experience.'
 
@@ -68,11 +67,12 @@ license folder that is included in the DebugPx module. If not, see
                         'DebugPx.psd1'
                         'DebugPx.psm1'
                         'DebugPx.dll'
+                        'LICENSE'
+                        'NOTICE'
                         'en-us\DebugPx.dll-Help.xml'
                         'functions\Disable-BreakpointCommand.ps1'
                         'functions\Enable-BreakpointCommand.ps1'
                         'helpers\New-BreakpointCommandBreakpoint.ps1'
-                        'license\gpl-3.0.txt'
                         'scripts\Export-BinaryModule.ps1'
                         'scripts\Install-DebugPxModule.ps1'
                         'scripts\Uninstall-DebugPxModule.ps1'
@@ -81,7 +81,7 @@ license folder that is included in the DebugPx module. If not, see
           PrivateData = @{
                             PSData = @{
                                 Tags = 'breakpoint debug debugger write-debug set-psbreakpoint'
-                                LicenseUri = 'http://www.gnu.org/licenses/gpl-3.0.html'
+                                LicenseUri = 'http://apache.org/licenses/LICENSE-2.0.txt'
                                 ProjectUri = 'https://github.com/KirkMunro/DebugPx'
                                 IconUri = ''
                                 ReleaseNotes = ''
@@ -91,8 +91,8 @@ license folder that is included in the DebugPx module. If not, see
 # SIG # Begin signature block
 # MIIZIAYJKoZIhvcNAQcCoIIZETCCGQ0CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQULaSCGxjk4g4Tr9Z129EerV1a
-# F+WgghRWMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQULD/YuuWVXBAMBC+ySeqrLt96
+# rvygghRWMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -205,23 +205,23 @@ license folder that is included in the DebugPx module. If not, see
 # aWdpY2VydC5jb20xLjAsBgNVBAMTJURpZ2lDZXJ0IEFzc3VyZWQgSUQgQ29kZSBT
 # aWduaW5nIENBLTECEA3/99JYTi+N6amVWfXCcCMwCQYFKw4DAhoFAKB4MBgGCisG
 # AQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQw
-# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFL79
-# iQL6HeHr5IJrG8JqTZUQfHCPMA0GCSqGSIb3DQEBAQUABIIBAEvFGi3ncClazz50
-# Q7g4JlkyVassM/OTWSYiKSMIUtwIOGtHhRJAT0nVLSate434CVj1w0wDScOiPgAN
-# VnefWPaMrfHAQ/2npdyk+JoyqxCMMBHqbd/eeomDQyyjZIUkQJprRCSJHNm0zD6z
-# HT/msh0QEYsWD0tMegScLtlvCL8/lnXDvyv4YIkprv1oyKYoSzwEvjEnTNBT/wYt
-# DgFfm9CqrSabdNTNyeCvmg5P6HBwwaVqJTLKN+9VsAfYqtcgovm2B5sXwzKWYNhW
-# 46Eb8+xcvPKuz4twlSQ7MT8CKeWpYIZbjICsGvzAe8ei2zBsuT4VFukacxq5p08e
-# h7qjD4OhggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQG
+# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFMC+
+# NcdmKyJDCVbGW7fbeqRlIAR5MA0GCSqGSIb3DQEBAQUABIIBAAb4ApDkhgiVYUZY
+# 5vChnq4ATV4Kmc6bkAIHCMcPW93zMCvIodVBn8lc/+O1wKxZgbl8N2y5uEauu6k+
+# 4+6oxg4cIxiFA0C71kGKYxZfFiSO3WGwvRHfLHFkTuJhB1CYuKFxDVdtJ1olHaIC
+# u/qhz9bPbiSPLUejsA91tk8F/5p4n2hINiEpqeWWaguw4zU7WK78aHHCalIBrD36
+# UJOV7GckMRA7p2B/1nXKFwBacQ0ozrxf4HJB8WyKcF131lGy0nfI0nJGmOmqJxzr
+# 1kj+WcSB6Sr3WlueYA3cZ8mvAxIkW23Qmxo7nhwfFNZl3PdigavEEOsi7NpC4Zqk
+# DyGTWF6hggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQG
 # EwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29ycG9yYXRpb24xMDAuBgNVBAMTJ1N5
 # bWFudGVjIFRpbWUgU3RhbXBpbmcgU2VydmljZXMgQ0EgLSBHMgIQDs/0OMj+vzVu
 # BNhqmBsaUDAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-# BgkqhkiG9w0BCQUxDxcNMTQxMDA5MTk1NzMyWjAjBgkqhkiG9w0BCQQxFgQUjt31
-# sPoYLzFDZiGEwXpxRAMtyRgwDQYJKoZIhvcNAQEBBQAEggEAidEPb1ybP/WYWCa8
-# c1MMJckV3uh3Re4mPbwPJnNaQJAX8ZmtoQSH8Ul1ig+/gGZEs+C/ETvVYIzfzhPG
-# jk32Y6d3YSVXeOL0Ok66CKjEBcbKJ85uW9hHClaHPRuez8nDbBMXysEUD8Q19Sr8
-# fdDfjTtnyvZjDZ4lPYipqFM7VwWcPrp55K1J+f2PmPU7nXOFcSgJTl7hv+gSYiV6
-# jAH/QyZdONma1bl1ZUxGQ/x1hZ0uAYqT/XUodjJz2JjnLSfYWy5xcrjG+X7UxZ7z
-# X4J1IwtM8CRwUwuezKRZPKHQpiPWr7jDAuTJN8vkPk4lHKNYnGc6Xl/5WAFPtyl9
-# pqoCgQ==
+# BgkqhkiG9w0BCQUxDxcNMTQxMDE0MDUxMDU4WjAjBgkqhkiG9w0BCQQxFgQUh5Ja
+# /y7ziRtq//SGkXuTDS/ufHgwDQYJKoZIhvcNAQEBBQAEggEAjQsJNeNFfdrcbrZH
+# VNOmhuV53ObjoFWc7zMNEj3a0Tm8QWY+HPwld4FGNwy09ePnISk+oMSXgRJaQS0j
+# psfLnJeZQUUmCRQHycSrrpDIV6LsOv+QkpaqfFwfVMoyAdTF369qWvnYh34rWypc
+# OrckUCUeC9e666nC3KPPwtH5zaoRZxsZgKxlqZILj2lDYl50/5MPt4sG1aYqX1Kj
+# Ok/1137nak1IOtMTMIf8ZFwWaeCdupgGHA2HdsR9qKNrV57z/I+MDHtk67/RE3rM
+# U/ERMq3nuuMPEeYjRFYuD+EHLVZ22OAnWfTlPi6G7GJ+pZb18Z9Iw2tYb3kX5f/7
+# wW8yOQ==
 # SIG # End signature block

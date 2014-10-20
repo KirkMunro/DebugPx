@@ -154,9 +154,25 @@ namespace DebugPx
                     SessionState.PSVariable.Set("PSItem", InputObject);
                 }
 
+                // Ensure that we don't debug into the condition script by forcing the DebuggerHidden attribute if it is not already set
+                string conditionScript;
+                ScriptBlockAst conditionScriptAst = ConditionScript.Ast as ScriptBlockAst;
+                if (conditionScriptAst.ParamBlock == null)
+                {
+                    conditionScript = "[System.Diagnostics.DebuggerHidden()]\nparam()\n" + ConditionScript.ToString();
+                }
+                else if (conditionScriptAst.ParamBlock.Find(ast => (ast is AttributeAst) && (string.Compare((ast as AttributeAst).TypeName.FullName, "System.Diagnostics.DebuggerHidden", true) == 0), true) == null)
+                {
+                    conditionScript = "[System.Diagnostics.DebuggerHidden()]`n" + ConditionScript.ToString();
+                }
+                else
+                {
+                    conditionScript = ConditionScript.ToString();
+                }
+
                 // Invoke the condition Script Block to see if we're going to enter the debugger at a breakpoint
                 ps.Commands.Clear();
-                ps.AddScript(ConditionScript.ToString(), false);
+                ps.AddScript(conditionScript, false);
                 results = ps.Invoke();
                 if (ps.HadErrors)
                 {

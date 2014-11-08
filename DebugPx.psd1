@@ -23,7 +23,7 @@ limitations under the License.
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.4'
+        ModuleVersion = '1.0.0.5'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -37,12 +37,9 @@ limitations under the License.
 
     PowerShellVersion = '3.0'
     
-      RequiredModules = @(
-                        'SnippetPx'
-                        )
-
         NestedModules = @(
                         'DebugPx.dll'
+                        'SnippetPx'
                         )
 
       CmdletsToExport = @(

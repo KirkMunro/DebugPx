@@ -23,7 +23,7 @@ limitations under the License.
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.5'
+        ModuleVersion = '1.0.0.6'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -71,8 +71,6 @@ limitations under the License.
                         'functions\Enable-BreakpointCommand.ps1'
                         'helpers\New-BreakpointCommandBreakpoint.ps1'
                         'scripts\Export-BinaryModule.ps1'
-                        'scripts\Install-DebugPxModule.ps1'
-                        'scripts\Uninstall-DebugPxModule.ps1'
                         )
 
           PrivateData = @{
@@ -88,8 +86,8 @@ limitations under the License.
 # SIG # Begin signature block
 # MIIZIAYJKoZIhvcNAQcCoIIZETCCGQ0CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUpPXBt+VBWBOczPWyD7hjkIpU
-# RiCgghRWMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUciAIytO6+C5OtR4rhiz9N2/F
+# mHigghRWMIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -202,23 +200,23 @@ limitations under the License.
 # aWdpY2VydC5jb20xLjAsBgNVBAMTJURpZ2lDZXJ0IEFzc3VyZWQgSUQgQ29kZSBT
 # aWduaW5nIENBLTECEA3/99JYTi+N6amVWfXCcCMwCQYFKw4DAhoFAKB4MBgGCisG
 # AQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQw
-# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFH2d
-# w2QeZ0m1u7pXOhJAT9r7akF7MA0GCSqGSIb3DQEBAQUABIIBAErlrRmrBr37WtNo
-# Q2WubArGw26GI5qm90E3klF/H7Cvk0mnp8l0rRbMuxRJ/BNaitKtyWiNlYEkT9Ix
-# VZx0TWRv9XVxEmbdCkbXE+S4RF07RITnW+d9DDEnqKdWfgFDSdEgVwzafMmxhmR+
-# 4uEusng4FTbYAxQbcN3HeymXApgIRizzgydJJRuqMgmqkgtIxIyzC1JcEg3uIFG/
-# 3RJ9ap+en1K+1OUzZSFBwCLzTu4A0ku0AztP27+ZBxFRG6BcdYOPdin/h3amO/8z
-# DUsg3pBdYVSGXo8yHHoVYfm/TOwTG4lUb7hLQ9ZUYtlafeF+vx+BMqE3Tiumc4Z4
-# yqe7nguhggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQG
+# HAYKKwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFFGV
+# 1cGBUX8GZZJeVehqVfR7BM+bMA0GCSqGSIb3DQEBAQUABIIBACi3t+RoXpXFfO7x
+# vDOp2ypfaDOcyglPrG87404V7SYRujObM/0gXE2iNZHizmbAX6HbT/lagmQnY0nF
+# qvSbRv72Q7dLG75wwv3qjoXj7JUHXEfd04JfjVEbXgpUPOJn+FHON4p2LYGMwK8h
+# V8omQ+bN9+zmMoNQOVzfpQdKe87jrAefBkzb8hnXlm0PiIggt3A05MDONoaEyq5/
+# hNnJw5yWmtqO16zZXD9VoA/Z1Z79Wygve4vNnMTKwz5IrgMa0riqNcoqCOE0FGk/
+# bRZRyxWxSiSlrc5ufw5yLpwMo3FK188MZnj5o3g9HNzOvANNni5bICl/79RsBrTI
+# UtcPeIqhggILMIICBwYJKoZIhvcNAQkGMYIB+DCCAfQCAQEwcjBeMQswCQYDVQQG
 # EwJVUzEdMBsGA1UEChMUU3ltYW50ZWMgQ29ycG9yYXRpb24xMDAuBgNVBAMTJ1N5
 # bWFudGVjIFRpbWUgU3RhbXBpbmcgU2VydmljZXMgQ0EgLSBHMgIQDs/0OMj+vzVu
 # BNhqmBsaUDAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-# BgkqhkiG9w0BCQUxDxcNMTQxMTA4MjMzMzI4WjAjBgkqhkiG9w0BCQQxFgQU7vJi
-# vpIIUQsTpj6Jv698XG3a0WAwDQYJKoZIhvcNAQEBBQAEggEAJNjC7Dhcam1aMXOW
-# 5dk/tlZOIuLYigFxFx4BGAwPW/Mywr67ms6wh9b9O/j9JK1LA/NlsnDpjyLyycNZ
-# 3gOspRkUBTXsJiz6YtvaWuPLNVq9v5PnYWmztRQMzw1kBv2QL4rs1OWc2HwacmeW
-# pepZMkIvb7bn0pYEI1PLpPNXuO0cT9lEjP9yc1ZF6M7OEChPRNcnCe3oyw/i8nQG
-# 7W8C3I/Tw3+i3BH4PRy2LVd7B9leybrE+J0znPWvsG5/Nj3ILVLcgnwyh20iVQ44
-# EDp5hsqzLOz1PKygDpJhUmo0bmRonV6U0zRMFbpHkcPz5iotNCotWNWXLxCUlZ9M
-# FkGVAw==
+# BgkqhkiG9w0BCQUxDxcNMTQxMTE3MDIyNjU4WjAjBgkqhkiG9w0BCQQxFgQUvHmy
+# o/iDgl/OF71mm+TynR9RxngwDQYJKoZIhvcNAQEBBQAEggEAh6zX/uAJ7iCJrNan
+# aPu8TwW0xpJkeB3Bvh6sSnM2bUFYswOL28Nh3kNIc894MsfD9HQfXS/RD5CLXNI+
+# 55BrnPSHcBz7bhYcH0OuSv21+tQi2HDGqXH4+wRFAsmHP12Al08PRlvOBemDyujO
+# SwEx9RPSBl96U4H1+bD9vyKhDl+3iLPzQjxjhtRU2j5tg1p2/ofdd/KRle0NH7CR
+# X7g5fv47x/hbhEvE7AoviK3kA2YiYDBvWXwjcoOgMOUQL4R+TDd2KTsuVcWIXsFK
+# BDwribH4/6o9EA9qdJzSSh9zcsemLQGUT1UWUqOE6/CbitTvNk8tga0PgiWT6m+m
+# N2c1MA==
 # SIG # End signature block

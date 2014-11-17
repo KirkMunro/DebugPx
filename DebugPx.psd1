@@ -23,7 +23,7 @@ limitations under the License.
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.6'
+        ModuleVersion = '1.0.0.7'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 

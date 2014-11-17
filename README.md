@@ -66,10 +66,10 @@ unless you want it to take longer), and invoke one of the following commands:
 ```powershell
 # If you want to install DebugPx for all users or update a version already installed
 # (recommended, requires elevation for new install for all users)
-& ([scriptblock]::Create((iwr -uri http://tinyurl.com/Install-ModuleFromGitHub).Content)) -ModuleName DebugPx,SnippetPx
+& ([scriptblock]::Create((iwr -uri http://tinyurl.com/Install-GitHubHostedModule).Content)) -ModuleName DebugPx,SnippetPx
 
 # If you want to install DebugPx for the current user
-& ([scriptblock]::Create((iwr -uri http://tinyurl.com/Install-ModuleFromGitHub).Content)) -ModuleName DebugPx,SnippetPx -Scope CurrentUser
+& ([scriptblock]::Create((iwr -uri http://tinyurl.com/Install-GitHubHostedModule).Content)) -ModuleName DebugPx,SnippetPx -Scope CurrentUser
 ```
 
 ### Using the DebugPx module

@@ -23,7 +23,7 @@ limitations under the License.
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.5'
+        ModuleVersion = '1.0.0.6'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -71,8 +71,6 @@ limitations under the License.
                         'functions\Enable-BreakpointCommand.ps1'
                         'helpers\New-BreakpointCommandBreakpoint.ps1'
                         'scripts\Export-BinaryModule.ps1'
-                        'scripts\Install-DebugPxModule.ps1'
-                        'scripts\Uninstall-DebugPxModule.ps1'
                         )
 
           PrivateData = @{

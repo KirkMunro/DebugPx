@@ -63,8 +63,12 @@ limitations under the License.
     The first command creates a test function with two commands. The second command creates a test function to see how the DebuggerStepThrough attribute works. The third command invokes that function, and you can step into the first function using the debugger.
 
     The fourth command configures Test-Function such that the debugger will not step into it unless a breakpoint is set. The fifth command invokes the Test-DebuggerStepThrough function again, and this time stepping results in the debugger stepping over Test-Function.
-    
+
     The sixth command redefines the test function with a breakpoint. The seventh command sets DebuggerStepThrough mode on that redefined function. When the last command is invoked, and you step through using the debugger, the debugger will step over the Test-Function however since there is a breakpoint, the debugger stops on the breakpoint in that function. From this point, stepping through the rest of the function works as normal.
+.EXAMPLE
+    PS C:\> Set-CommandDebugMode -Module DebugPx -DebuggerHidden:$false -DebuggerStepThrough:$false
+
+    This command removes all debug mode options from all functions and filters that are exported by the DebugPx module. With these options removed, the debugger can then step into these functions if necessary.
 .LINK
     Get-CommandDebugMode
 .LINK
@@ -76,14 +80,15 @@ function Set-CommandDebugMode {
     [System.Diagnostics.DebuggerHidden()]
     param(
         # Sets the debug mode for commands with the specified name. Enter a name or name pattern. Wildcards are permitted.
-        [Parameter(Position=0,Mandatory=$true,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Position=0,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [System.String[]]
-        $Name,
+        $Name = '*',
 
         # Sets the debug mode for commands that came from the specified modules. Enter the names of modules, or pass in module objects.
-        [Parameter(Position=1)]
+        [Parameter(Position=1,ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
+        [Alias('ModuleName')]
         [System.String[]]
         $Module,
 
@@ -97,35 +102,67 @@ function Set-CommandDebugMode {
     )
     begin {
         try {
+            #region Find the DebuggerHidden and DebuggerStepThrough properties, whether they are public or not.
+
             $debuggerHiddenProperty = [System.Management.Automation.ScriptBlock].GetProperty('DebuggerHidden',[System.Reflection.BindingFlags]'Public,NonPublic,Instance')
             $debuggerStepThroughProperty = [System.Management.Automation.ScriptBlock].GetProperty('DebuggerStepThrough',[System.Reflection.BindingFlags]'Public,NonPublic,Instance')
-            $moduleParameter = @{}
+
+            #endregion
+
+            #region Define a hashtable to store exported module functions.
+
             $exportedModuleFunctions = @{}
-            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey('Module')) {
-                $moduleParameter['Module'] = $Module
-                foreach ($item in Get-Module -Name $Module -ListAvailable) {
-                    $exportedModuleFunctions[$item.Name] = $item.ExportedFunctions.Keys
-                }
-            }
+
+            #endregion
         } catch {
             $PSCmdlet.ThrowTerminatingError($_)
         }
     }
     process {
         try {
+            #region If the Module parameter is used, look up the list of exported functions in the module and prepare to splat the parameter later.
+
+            $moduleParameter = @{}
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey('Module')) {
+                $moduleParameter['Module'] = $Module
+                if (-not $exportedModuleFunctions.ContainsKey($Module)) {
+                    foreach ($item in Get-Module -Name $Module -ListAvailable) {
+                        $exportedModuleFunctions[$item.Name] = $item.ExportedFunctions.Keys
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Process any functions or filters that match our search criteria.
+
             foreach ($command in Get-Command -CommandType Function,Filter -Name $Name -ErrorAction Ignore @moduleParameter) {
-                # When processing modules, skip non-exported functions.
+                #region Skip any non-exported functions when processing modules.
+
                 if (-not [System.String]::IsNullOrEmpty($command.ModuleName) -and
                     $exportedModuleFunctions.ContainsKey($command.ModuleName) -and
                     ($exportedModuleFunctions[$command.ModuleName] -notcontains $command.Name)) {
                     continue
                 }
-                # Update commands according to ShouldProcess
+
+                #endregion
+
+                #region Now update the debug mode for commands acccording to whether or not ShouldProcess allows it.
+
                 if ($PSCmdlet.ShouldProcess($command)) {
+                    # You must "prime the pump" by walking through the Attributes collection before you check
+                    # the values of DebuggerHidden or DebuggerStepThrough properties. Otherwise, the value of
+                    # the boolean properties may report incorrectly (bug in PowerShell?).
+                    foreach ($attribute in $command.ScriptBlock.Attributes) {}
+                    # Once the pump is primed, you can set the values and they will stick.
                     $debuggerHiddenProperty.SetValue($command.ScriptBlock,$DebuggerHidden.IsPresent)
                     $debuggerStepThroughProperty.SetValue($command.ScriptBlock,$DebuggerStepThrough.IsPresent)
                 }
+
+                #endregion
             }
+
+            #endregion
         } catch {
             $PSCmdlet.ThrowTerminatingError($_)
         }

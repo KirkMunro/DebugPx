@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2014 Kirk Munro
+Copyright 2015 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ limitations under the License.
 @{
       ModuleToProcess = 'DebugPx.psm1'
 
-        ModuleVersion = '1.0.0.7'
+        ModuleVersion = '1.0.1.8'
 
                  GUID = '161b91e7-ca3d-40e2-8d0e-e00b31740f90'
 
@@ -31,7 +31,7 @@ limitations under the License.
 
           CompanyName = 'Poshoholic Studios'
 
-            Copyright = 'Copyright 2014 Kirk Munro'
+            Copyright = 'Copyright 2015 Kirk Munro'
 
           Description = 'The DebugPx module provides a set of commands that make it easier to debug PowerShell scripts, functions and modules. These commands leverage the native debugging capabilities in PowerShell (the callstack, breakpoints, error output and the -Debug common parameter) and provide additional functionality that these features do not provide, enabling a richer debugging experience.'
 
@@ -50,6 +50,8 @@ limitations under the License.
     FunctionsToExport = @(
                         'Disable-BreakpointCommand'
                         'Enable-BreakpointCommand'
+                        'Get-CommandDebugMode'
+                        'Set-CommandDebugMode'
                         )
 
       AliasesToExport = @(
@@ -57,7 +59,9 @@ limitations under the License.
                         'bp'
                         'dbpc'
                         'ebpc'
+                        'gcmdm'
                         'ifdebug'
+                        'scmdm'
                         )
 
              FileList = @(
@@ -69,6 +73,8 @@ limitations under the License.
                         'en-us\DebugPx.dll-Help.xml'
                         'functions\Disable-BreakpointCommand.ps1'
                         'functions\Enable-BreakpointCommand.ps1'
+                        'functions\Get-CommandDebugMode.ps1'
+                        'functions\Set-CommandDebugMode.ps1'
                         'helpers\New-BreakpointCommandBreakpoint.ps1'
                         'scripts\Export-BinaryModule.ps1'
                         )

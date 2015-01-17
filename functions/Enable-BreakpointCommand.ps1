@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2014 Kirk Munro
+Copyright 2015 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ limitations under the License.
 function Enable-BreakpointCommand {
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([System.Void])]
+    [System.Diagnostics.DebuggerHidden()]
     param()
     try {
         #region Enable the breakpoint command breakpoint.

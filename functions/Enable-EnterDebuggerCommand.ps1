@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2015 Kirk Munro
+Copyright 2016 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ limitations under the License.
 .SYNOPSIS
     Enables the breakpoint command.
 .DESCRIPTION
-    The Enable-BreakpointCommand command enables the breakpoint command in your PowerShell environment.
+    The Enable-EnterDebuggerCommand command enables the breakpoint command in your PowerShell environment.
 .PARAMETER WhatIf
     Shows what would happen if the command was run unrestricted. The command is run, but any changes it would make are prevented, and text descriptions of those changes are written to the console instead.
 .PARAMETER Confirm
@@ -36,21 +36,21 @@ limitations under the License.
 .NOTES
     When the breakpoint command is enabled, invoking breakpoint, bp, or Enter-Debugger may result in a script that is running stopping on a breakpoint on that line. For more information, invoke Get-Help breakpoint.
 .EXAMPLE
-    PS C:\> Enable-BreakpointCommand
+    PS C:\> Enable-EnterDebuggerCommand
     PS C:\> Get-Service w* | breakpoint {$_.Name -eq 'wuauserv'} | Select-Object -ExpandProperty Name
 
     The first command enables the breakpoint command. When the next command is invoked, a breakpoint will be hit when the Windows Update service is passed down the pipeline.
 .EXAMPLE
-    PS C:\> Enable-BreakpointCommand
+    PS C:\> Enable-EnterDebuggerCommand
     PS C:\> & {'Before breakpoint'; breakpoint; 'After breakpoint'}
 
     The first command enables the breakpoint command. When the next command is invoked, the string "Before breakpoint" will be output to the console, and then the debugger will stop on the breakpoint command. "After breakpoint" will only be output to the console when the debugger is told to step or continue execution.
 .LINK
-    Disable-BreakpointCommand
+    Disable-EnterDebuggerCommand
 .LINK
     breakpoint
 #>
-function Enable-BreakpointCommand {
+function Enable-EnterDebuggerCommand {
     [CmdletBinding(SupportsShouldProcess=$true)]
     [OutputType([System.Void])]
     [System.Diagnostics.DebuggerHidden()]
@@ -58,7 +58,7 @@ function Enable-BreakpointCommand {
     try {
         #region Enable the breakpoint command breakpoint.
 
-        Enable-PSBreakpoint -Breakpoint $script:Breakpoint.Command
+        Enable-PSBreakpoint -Breakpoint $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint']
 
         #endregion
     } catch {
@@ -66,9 +66,14 @@ function Enable-BreakpointCommand {
     }
 }
 
-Export-ModuleMember -Function Enable-BreakpointCommand
+Export-ModuleMember -Function Enable-EnterDebuggerCommand
+
+if (-not (Get-Alias -Name Enable-BreakpointCommand -ErrorAction Ignore)) {
+    New-Alias -Name Enable-BreakpointCommand -Value Enable-EnterDebuggerCommand
+    Export-ModuleMember -Alias Enable-BreakpointCommand
+}
 
 if (-not (Get-Alias -Name ebpc -ErrorAction Ignore)) {
-    New-Alias -Name ebpc -Value Enable-BreakpointCommand
+    New-Alias -Name ebpc -Value Enable-EnterDebuggerCommand
     Export-ModuleMember -Alias ebpc
 }

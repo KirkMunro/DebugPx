@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2015 Kirk Munro
+Copyright 2016 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -69,6 +69,10 @@ limitations under the License.
     PS C:\> Set-CommandDebugMode -Module DebugPx -DebuggerHidden:$false -DebuggerStepThrough:$false
 
     This command removes all debug mode options from all functions and filters that are exported by the DebugPx module. With these options removed, the debugger can then step into these functions if necessary.
+.EXAMPLE
+    PS C:\> Set-CommandDebugMode -Module DebugPx
+
+    This command removes all debug mode options from all functions and filters that are exported by the DebugPx module. With these options removed, the debugger can then step into these functions if necessary.
 .LINK
     Get-CommandDebugMode
 .LINK
@@ -80,13 +84,13 @@ function Set-CommandDebugMode {
     [System.Diagnostics.DebuggerHidden()]
     param(
         # Sets the debug mode for commands with the specified name. Enter a name or name pattern. Wildcards are permitted.
-        [Parameter(Position=0,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [System.String[]]
         $Name = '*',
 
         # Sets the debug mode for commands that came from the specified modules. Enter the names of modules, or pass in module objects.
-        [Parameter(Position=1,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [Alias('ModuleName')]
         [System.String[]]

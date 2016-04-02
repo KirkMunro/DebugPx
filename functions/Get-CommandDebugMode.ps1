@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2015 Kirk Munro
+Copyright 2016 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -49,18 +49,18 @@ limitations under the License.
     Get-Command
 #>
 function Get-CommandDebugMode {
-    [CmdletBinding(SupportsShouldProcess=$true)]
+    [CmdletBinding()]
     [OutputType('DebugPx.CommandDebugMode')]
     [System.Diagnostics.DebuggerHidden()]
     param(
         # Gets the debug mode for commands with the specified name. Enter a name or name pattern. Wildcards are permitted.
-        [Parameter(Position=0,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [System.String[]]
         $Name = '*',
 
         # Gets the debug mode for commands that came from the specified modules. Enter the names of modules, or pass in module objects.
-        [Parameter(Position=1,ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Position=1, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
         [Alias('ModuleName')]
         [System.String[]]

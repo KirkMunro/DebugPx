@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2015 Kirk Munro
+Copyright 2016 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,17 +20,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 #############################################################################>
 
-#region Initialize the module.
+[System.Diagnostics.DebuggerHidden()]
+param()
 
-Invoke-Snippet -Name Module.Initialize
+#region Set up a module scope trap statement so that terminating errors actually terminate.
+
+trap {throw $_}
 
 #endregion
 
-#region Import helper (private) function definitions.
+#region Initialize the module.
 
-Invoke-Snippet -Name ScriptFile.Import -Parameters @{
-    Path = Join-Path -Path $PSModuleRoot -ChildPath helpers
-}
+Invoke-Snippet -Name Module.Initialize
 
 #endregion
 
@@ -48,65 +49,77 @@ Invoke-Snippet -Name ScriptFile.Import -Parameters @{
 
 #endregion
 
-#region Define the breakpoints that are used by this module.
+#region Set up a hashtable for module-local storage of Enter-Debugger command breakpoint metadata.
 
-$Breakpoint = @{
-    Command = New-BreakpointCommandBreakpoint
+$EnterDebuggerCommandBreakpointMetadata = @{
+    # A flag that tracks whether or not the condition was met (for conditional breakpointing)
+    ConditionMet = $false
+
+    # The action that will be invoked when the breakpoint is hit
+    Action = {
+        [System.Diagnostics.DebuggerHidden()]
+        param()
+        if ($script:EnterDebuggerCommandBreakpointMetadata['ConditionMet']) {
+            break
+        }
+    }
+
+    # An event handler that will re-create the breakpoints used by this script if they are manually removed
+    OnBreakpointUpdated = {
+        param(
+            [System.Object]$sender,
+            [System.Management.Automation.BreakpointUpdatedEventArgs]$eventArgs
+        )
+        if (($eventArgs.UpdateType -eq [System.Management.Automation.BreakpointUpdateType]::Removed) -and
+            ($eventArgs.Breakpoint.Id -eq $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'].Id)) {
+            #region If the breakpoint command breakpoint was removed, re-create it and warn the user about the requirement.
+
+            $enabled = $eventArgs.Breakpoint.Enabled
+            Write-Warning -Message "The breakpoint command breakpoint is required by the DebugPx module and cannot be manually removed. You can disable this breakpoint by invoking ""Disable-EnterDebuggerCommand"", or you can remove it by invoking ""Remove-Module -Name DebugPx"". This breakpoint is currently $(if ($enabled) {'enabled'} else {'disabled'})."
+            $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'] = Set-PSBreakpoint -Command Enter-Debugger -Action $script:EnterDebuggerCommandBreakpointMetadata['Action'] -ErrorAction Stop
+            if (-not $enabled) {
+                Disable-EnterDebuggerCommand
+            }
+
+            #endregion
+            break
+        }
+    }
 }
+
+# Add the breakpoint itself separately since it references the action which must already exist in the hashtable
+$EnterDebuggerCommandBreakpointMetadata['Breakpoint'] = Set-PSBreakpoint -Command Enter-Debugger -Action $script:EnterDebuggerCommandBreakpointMetadata['Action'] -ErrorAction Stop
 
 #endregion
 
 #region If we are not in an interactive session, disable the breakpoints by default.
 
 if (-not [System.Environment]::UserInteractive) {
-    Disable-BreakpointCommand
-}
-
-#endregion
-
-#region Define an event handler that will re-create the breakpoints used by this script if they are manually removed.
-
-$OnBreakpointUpdated = {
-    param(
-        [System.Object]$sender,
-        [System.Management.Automation.BreakpointUpdatedEventArgs]$eventArgs
-    )
-    if (($eventArgs.UpdateType -eq [System.Management.Automation.BreakpointUpdateType]::Removed) -and
-        ($eventArgs.Breakpoint.Id -eq $script:Breakpoint.Command.Id)) {
-        #region If the breakpoint command breakpoint was removed, re-create it and warn the user about the requirement.
-
-        $enabled = $eventArgs.Breakpoint.Enabled
-        Write-Warning "The breakpoint command breakpoint is required by the DebugPx module and cannot be manually removed. You can disable this breakpoint by invoking ""Disable-BreakpointCommand"", or you can remove it by invoking ""Remove-Module -Name DebugPx"". This breakpoint is currently $(if ($enabled) {'enabled'} else {'disabled'})."
-        $script:Breakpoint['Command'] = New-BreakpointCommandBreakpoint
-        if (-not $enabled) {
-            Disable-BreakpointCommand
-        }
-
-        #endregion
-        break
-    }
+    Disable-EnterDebuggerCommand
 }
 
 #endregion
 
 #region Activate the OnBreakpointUpdated event handler.
 
-$Host.Runspace.Debugger.add_BreakpointUpdated($OnBreakpointUpdated)
+$Host.Runspace.Debugger.add_BreakpointUpdated($EnterDebuggerCommandBreakpointMetadata['OnBreakpointUpdated'])
 
 #endregion
 
+#region Clean-up the module when it is removed.
+    
 $PSModule.OnRemove = {
     #region Deactivate the OnBreakpointUpdated event handler.
 
-    $Host.Runspace.Debugger.remove_BreakpointUpdated($OnBreakpointUpdated)
+    $Host.Runspace.Debugger.remove_BreakpointUpdated($script:EnterDebuggerCommandBreakpointMetadata['OnBreakpointUpdated'])
 
     #endregion
 
-    #region Remove any breakpoints that are used by this module.
+    #region Remove the breakpoint that is used by this module.
 
-    foreach ($key in $Breakpoint.Keys) {
-        Remove-PSBreakpoint -Breakpoint $Breakpoint.$key -ErrorAction Ignore
-    }
+    Remove-PSBreakpoint -Breakpoint $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'] -ErrorAction Ignore
 
     #endregion
 }
+
+#endregion

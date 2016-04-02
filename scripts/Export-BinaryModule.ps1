@@ -5,7 +5,7 @@ debugging capabilities in PowerShell (the callstack, breakpoints, error output
 and the -Debug common parameter) and provide additional functionality that
 these features do not provide, enabling a richer debugging experience.
 
-Copyright 2015 Kirk Munro
+Copyright 2016 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,11 +21,13 @@ limitations under the License.
 #############################################################################>
 
 # Export the cmdlets that are defined in the nested module
-Export-ModuleMember -Cmdlet Invoke-IfDebug,Enter-Debugger
+Export-ModuleMember -Cmdlet Debug-Module,Enter-Debugger,Invoke-IfDebug
 
-# Define an ifdebug alias so that using conditional debug blocks is more natural.
-Set-Alias -Force -Name ifdebug -Value Invoke-IfDebug
-Export-ModuleMember -Alias ifdebug
+# Define a dgmo alias so that debugging modules is more natural.
+if (-not (Get-Alias -Name dgmo -ErrorAction Ignore)) {
+    New-Alias -Name dgmo -Value Debug-Module
+    Export-ModuleMember -Alias dgmo
+}
 
 # Define a breakpoint alias so that setting breakpoints is more natural.
 Set-Alias -Force -Name breakpoint -Value Enter-Debugger
@@ -36,3 +38,7 @@ if (-not (Get-Alias -Name bp -ErrorAction Ignore)) {
     New-Alias -Name bp -Value breakpoint
     Export-ModuleMember -Alias bp
 }
+
+# Define an ifdebug alias so that using conditional debug blocks is more natural.
+Set-Alias -Force -Name ifdebug -Value Invoke-IfDebug
+Export-ModuleMember -Alias ifdebug

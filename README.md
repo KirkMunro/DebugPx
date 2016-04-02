@@ -17,7 +17,7 @@ these features do not provide, enabling a richer debugging experience.
 
 ### License and Copyright
 
-Copyright 2014 Kirk Munro
+Copyright 2016 Kirk Munro
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -66,10 +66,10 @@ unless you want it to take longer), and invoke one of the following commands:
 ```powershell
 # If you want to install DebugPx for all users or update a version already installed
 # (recommended, requires elevation for new install for all users)
-& ([scriptblock]::Create((iwr -uri http://tinyurl.com/Install-GitHubHostedModule).Content)) -ModuleName DebugPx,SnippetPx
+& ([scriptblock]::Create((iwr -uri http://bit.ly/Install-ModuleFromGitHub).Content)) -ModuleName DebugPx,SnippetPx
 
 # If you want to install DebugPx for the current user
-& ([scriptblock]::Create((iwr -uri http://tinyurl.com/Install-GitHubHostedModule).Content)) -ModuleName DebugPx,SnippetPx -Scope CurrentUser
+& ([scriptblock]::Create((iwr -uri http://bit.ly/Install-ModuleFromGitHub).Content)) -ModuleName DebugPx,SnippetPx -Scope CurrentUser
 ```
 
 ### Using the DebugPx module
@@ -136,8 +136,9 @@ Note that the breakpoint command will only trigger breakpoints in interactive
 sessions. It will not trigger breakpoints in background jobs, scheduled tasks,
 etc. Also note that even when working interactively, you can choose when you
 want to trigger on the breakpoint command and when you do not, by invoking the
-Enable-BreakpointCommand or Disable-BreakpointCommand commands. By default the
-breakpoint command is enabled when DebugPx is loaded in an interactive session.
+Enable-EnterDebuggerCommand or Disable-EnterDebuggerCommand commands. By default
+the breakpoint command is enabled when DebugPx is loaded in an interactive
+session.
 
 The other focus area for this module is debug logging. Since version 1,
 PowerShell has had a command for debug logging: Write-Debug. Write-Debug will

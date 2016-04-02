@@ -104,7 +104,7 @@ namespace DebugPx
                         // Use instrumentation of an AST to create an empty script block that appears like it is the command being invoked.
                         // This ensures that the proper position message is displayed when the debugger stops on Enter-Debugger, and that
                         // the script debugger shows the proper position when the list ("l") command is issued.
-                        ScriptBlockAst scriptBlockAst = new ScriptBlockAst(commandExtent, null, new StatementBlockAst(commandExtent, null, null), false);
+                        ScriptBlockAst scriptBlockAst = new ScriptBlockAst(commandExtent, null, new StatementBlockAst(commandExtent, new List<StatementAst>(), null), false);
                         ScriptBlock emptyScriptBlock = scriptBlockAst.GetScriptBlock();
 
                         // Invoke the empty script block (this allows the breakpoint to trigger, and this invocation method allows the "q"

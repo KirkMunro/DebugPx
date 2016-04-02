@@ -5,6 +5,7 @@ using System.Management.Automation;
 using PSDebugger = System.Management.Automation.Debugger;
 using System.Reflection;
 using System.Management.Automation.Language;
+using System.Collections;
 
 namespace DebugPx
 {
@@ -50,6 +51,7 @@ namespace DebugPx
         internal static List<object> BetterInvoke(this ScriptBlock scriptBlock, bool useLocalScope, bool hideFromDebugger, object pipelineInput, InvocationInfo invocationInfo, params object[] args)
         {
             List<object> results = new List<object>();
+            ArrayList legacyResults = new ArrayList();
 
             DebuggerHiddenAttribute addedAttribute = null;
             try
@@ -61,9 +63,17 @@ namespace DebugPx
                 }
 
                 Assembly smaAssembly = typeof(PowerShell).Assembly;
-                var outputPipe = smaAssembly.GetType("System.Management.Automation.Internal.Pipe")
-                                           ?.GetConstructor(publicOrPrivateInstance, null, new Type[] { typeof(List<object>) }, null)
-                                           ?.Invoke(new object[] { results });
+
+                // For performance reasons, the constructor changed between PowerShell 3.0 and 5.0. To compensate for this change,
+                // we try the new constructor first, and then try the old one if the new one wasn't there
+                var internalPipeType = smaAssembly.GetType("System.Management.Automation.Internal.Pipe");
+                var outputPipe = internalPipeType?.GetConstructor(publicOrPrivateInstance, null, new Type[] { typeof(List<object>) }, null)
+                                                 ?.Invoke(new object[] { results });
+                if (outputPipe == null)
+                {
+                    outputPipe = internalPipeType?.GetConstructor(publicOrPrivateInstance, null, new Type[] { typeof(ArrayList) }, null)
+                                                 ?.Invoke(new object[] { legacyResults });
+                }
 
                 MethodInfo invokeWithPipeMethod = typeof(ScriptBlock).GetMethod("InvokeWithPipe", publicOrPrivateInstance);
                 if (invokeWithPipeMethod == null)
@@ -73,7 +83,14 @@ namespace DebugPx
 
                 try
                 {
-                    invokeWithPipeMethod.Invoke(scriptBlock, new object[] { useLocalScope, ErrorHandlingBehaviour.WriteToCurrentErrorPipe, pipelineInput, new object[] { pipelineInput }, automationNull, outputPipe, invocationInfo, true, null, null, args });
+                    // The InvokeWithPipe method had additional parameters added between PowerShell 3.0 and 5.0. To compensate for this
+                    // change, we check the parameter count and invoke the method accordingly
+                    int parameterCount = invokeWithPipeMethod.GetParameters().Length;
+                    invokeWithPipeMethod.Invoke(
+                        scriptBlock, 
+                        parameterCount == 11 ? new object[] { useLocalScope, ErrorHandlingBehaviour.WriteToCurrentErrorPipe, pipelineInput, new object[] { pipelineInput }, automationNull, outputPipe, invocationInfo, true, null, null, args }
+                                             : new object[] { useLocalScope, ErrorHandlingBehaviour.WriteToCurrentErrorPipe, pipelineInput, new object[] { pipelineInput }, automationNull, outputPipe, invocationInfo, args }
+                    );
                 }
                 catch (Exception e)
                 {
@@ -87,6 +104,15 @@ namespace DebugPx
                     }
 
                     throw;
+                }
+
+                // If we retrieved pipeline output the legacy way, convert that to our List<object> result set
+                if (legacyResults.Count > 0)
+                {
+                    foreach (var entry in legacyResults)
+                    {
+                        results.Add(entry);
+                    }
                 }
 
                 return results;

@@ -20,114 +20,134 @@ See the License for the specific language governing permissions and
 limitations under the License.
 #############################################################################>
 
-[System.Diagnostics.DebuggerHidden()]
-param()
+<#
+.SYNOPSIS
+    Gets the current debug mode for a command.
+.DESCRIPTION
+    The Get-CommandDebugMode command gets the current debug mode for a command. Debug modes include DebuggerHidden and DebuggerStepThrough.
+.INPUTS
+    String
+.OUTPUTS
+    DebugPx.CommandDebugMode
+.NOTES
+    The Get-/Set-CommandDebugMode commands are used to manage the debug mode settings on Windows PowerShell functions and filters. They have no effect on other types of commands.
 
-#region Set up a module scope trap statement so that terminating errors actually terminate.
+    When a command is in DebuggerHidden mode, the debugger will not step into that command. When a command is in DebuggerStepThrough mode, the debugger will step through that command into other commands that it invoked that are not hidden from the debugger, without stepping into the lines within that command.
 
-trap {throw $_}
+    To enable DebuggerHidden or DebuggerStepThrough on a function or script block, set the System.Diagnostics.DebuggerHidden or System.Diagnostics.DebuggerStepThrough attributes for that function or script block, respectively.
+.EXAMPLE
+    PS C:\> Get-CommandDebugMode
 
-#endregion
+    This command returns the current debug mode for all functions and filters that are available in PowerShell.
+.EXAMPLE
+    PS C:\> Get-CommandDebugMode -Module DebugPx
 
-#region Initialize the module.
+    This command returns the current debug mode for all functions and filters that are exported by the DebugPx module.
+.LINK
+    Set-CommandDebugMode
+.LINK
+    Get-Command
+#>
+function Get-CommandDebugMode {
+    [CmdletBinding()]
+    [OutputType('DebugPx.CommandDebugMode')]
+    [System.Diagnostics.DebuggerHidden()]
+    param(
+        # Gets the debug mode for commands with the specified name. Enter a name or name pattern. Wildcards are permitted.
+        [Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [ValidateNotNullOrEmpty()]
+        [System.String[]]
+        $Name = '*',
 
-Invoke-Snippet -Name Module.Initialize
+        # Gets the debug mode for commands that came from the specified modules. Enter the names of modules, or pass in module objects.
+        [Parameter(Position=1, ValueFromPipelineByPropertyName=$true)]
+        [ValidateNotNullOrEmpty()]
+        [Alias('ModuleName')]
+        [System.String[]]
+        $Module
+    )
+    begin {
+        try {
+            #region Find the DebuggerHidden and DebuggerStepThrough properties, whether they are public or not.
 
-#endregion
+            $debuggerHiddenProperty = [System.Management.Automation.ScriptBlock].GetProperty('DebuggerHidden',[System.Reflection.BindingFlags]'Public,NonPublic,Instance')
+            $debuggerStepThroughProperty = [System.Management.Automation.ScriptBlock].GetProperty('DebuggerStepThrough',[System.Reflection.BindingFlags]'Public,NonPublic,Instance')
 
-#region Import public function definitions.
+            #endregion
 
-Invoke-Snippet -Name ScriptFile.Import -Parameters @{
-    Path = Join-Path -Path $PSModuleRoot -ChildPath functions
-}
+            #region Define a hashtable to store exported module functions.
 
-#endregion
+            $exportedModuleFunctions = @{}
 
-#region Export commands defined in nested modules.
-
-. $PSModuleRoot\scripts\Export-BinaryModule.ps1
-
-#endregion
-
-#region Set up a hashtable for module-local storage of Enter-Debugger command breakpoint metadata.
-
-$EnterDebuggerCommandBreakpointMetadata = @{
-    # A flag that tracks whether or not the condition was met (for conditional breakpointing)
-    ConditionMet = $false
-
-    # The action that will be invoked when the breakpoint is hit
-    Action = {
-        [System.Diagnostics.DebuggerHidden()]
-        param()
-        if ($script:EnterDebuggerCommandBreakpointMetadata['ConditionMet']) {
-            break
+            #endregion
+        } catch {
+            $PSCmdlet.ThrowTerminatingError($_)
         }
     }
+    process {
+        try {
+            #region If the Module parameter is used, look up the list of exported functions in the module and prepare to splat the parameter later.
 
-    # An event handler that will re-create the breakpoints used by this script if they are manually removed
-    OnBreakpointUpdated = {
-        param(
-            [System.Object]$sender,
-            [System.Management.Automation.BreakpointUpdatedEventArgs]$eventArgs
-        )
-        if (($eventArgs.UpdateType -eq [System.Management.Automation.BreakpointUpdateType]::Removed) -and
-            ($eventArgs.Breakpoint.Id -eq $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'].Id)) {
-            #region If the breakpoint command breakpoint was removed, re-create it and warn the user about the requirement.
-
-            $enabled = $eventArgs.Breakpoint.Enabled
-            Write-Warning -Message "The breakpoint command breakpoint is required by the DebugPx module and cannot be manually removed. You can disable this breakpoint by invoking ""Disable-EnterDebuggerCommand"", or you can remove it by invoking ""Remove-Module -Name DebugPx"". This breakpoint is currently $(if ($enabled) {'enabled'} else {'disabled'})."
-            $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'] = Set-PSBreakpoint -Command Enter-Debugger -Action $script:EnterDebuggerCommandBreakpointMetadata['Action'] -ErrorAction Stop
-            if (-not $enabled) {
-                Disable-EnterDebuggerCommand
+            $moduleParameter = @{}
+            if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey('Module')) {
+                $moduleParameter['Module'] = $Module
+                if (-not $exportedModuleFunctions.ContainsKey($Module)) {
+                    foreach ($item in Get-Module -Name $Module -ListAvailable) {
+                        $exportedModuleFunctions[$item.Name] = $item.ExportedFunctions.Keys
+                    }
+                }
             }
 
             #endregion
-            break
+
+            #region Process any functions or filters that match our search criteria.
+
+            foreach ($command in Get-Command -CommandType Function,Filter -Name $Name -ErrorAction Ignore @moduleParameter) {
+                #region Skip any non-exported functions when processing modules.
+
+                if (-not [System.String]::IsNullOrEmpty($command.ModuleName) -and
+                    $exportedModuleFunctions.ContainsKey($command.ModuleName) -and
+                    ($exportedModuleFunctions[$command.ModuleName] -notcontains $command.Name)) {
+                    continue
+                }
+
+                #endregion
+
+                #region Now return custom objects that contain the debug mode information that was requested.
+
+                # You must "prime the pump" by walking through the Attributes collection before you check
+                # the values of DebuggerHidden or DebuggerStepThrough properties. Otherwise, the value of
+                # the boolean properties may report incorrectly (bug in PowerShell?).
+                foreach ($attribute in $command.ScriptBlock.Attributes) {}
+                # Once the pump is primed, we can return objects containing command debug mode information.
+                [pscustomobject]@{
+                             PSTypeName = 'DebugPx.CommandDebugMode'
+                                   Name = $command.Name
+                         DebuggerHidden = $debuggerHiddenProperty.GetValue($command.ScriptBlock)
+                    DebuggerStepThrough = $debuggerStepThroughProperty.GetValue($command.ScriptBlock)
+                }
+
+                #endregion
+            }
+
+            #endregion
+        } catch {
+            $PSCmdlet.ThrowTerminatingError($_)
         }
     }
 }
 
-# Add the breakpoint itself separately since it references the action which must already exist in the hashtable
-$EnterDebuggerCommandBreakpointMetadata['Breakpoint'] = Set-PSBreakpoint -Command Enter-Debugger -Action $script:EnterDebuggerCommandBreakpointMetadata['Action'] -ErrorAction Stop
+Export-ModuleMember -Function Get-CommandDebugMode
 
-#endregion
-
-#region If we are not in an interactive session, disable the breakpoints by default.
-
-if (-not [System.Environment]::UserInteractive) {
-    Disable-EnterDebuggerCommand
+if (-not (Get-Alias -Name gcmdm -ErrorAction Ignore)) {
+    New-Alias -Name gcmdm -Value Get-CommandDebugMode
+    Export-ModuleMember -Alias gcmdm
 }
-
-#endregion
-
-#region Activate the OnBreakpointUpdated event handler.
-
-$Host.Runspace.Debugger.add_BreakpointUpdated($EnterDebuggerCommandBreakpointMetadata['OnBreakpointUpdated'])
-
-#endregion
-
-#region Clean-up the module when it is removed.
-    
-$PSModule.OnRemove = {
-    #region Deactivate the OnBreakpointUpdated event handler.
-
-    $Host.Runspace.Debugger.remove_BreakpointUpdated($script:EnterDebuggerCommandBreakpointMetadata['OnBreakpointUpdated'])
-
-    #endregion
-
-    #region Remove the breakpoint that is used by this module.
-
-    Remove-PSBreakpoint -Breakpoint $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'] -ErrorAction Ignore
-
-    #endregion
-}
-
-#endregion
 # SIG # Begin signature block
 # MIIXyQYJKoZIhvcNAQcCoIIXujCCF7YCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUAl1mF40iywFtsmPKB/WKjR4T
-# eBagghL8MIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUKAPzwm+WtN9Cu7hJxQ8GGjyN
+# DLegghL8MIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -233,22 +253,22 @@ $PSModule.OnRemove = {
 # bTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2lnbmlu
 # ZyBDQQIQDGszfu4uH1sJTotrjdG8+DAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIB
 # DDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUu37EPfwfiO3m
-# sRIKpwwNDWShSFcwDQYJKoZIhvcNAQEBBQAEggEAXM866AG43eoAb4ANjTKj7V68
-# +JL94h5obwzMDs47+7TWegn58+eIw+tTrg7qTLcnNaw0n/sjJ2JascqmvqZopCmT
-# Sku4M/bGiTL3AwhJc09oArlAHNuhkDPs/Qf62eOISG8QQwX9c3ytR9r51wJAgAAb
-# PBe+0z+tOJiUeiyJHxp0COhR5smcz/Sp2ZrxytiXceGET3I3lwOTAmj81M4GH3mq
-# HH2Pw8iQ+XwyFKoveGxP1GgHheRhnhvPOq95mBWv6YERuOMzS+dYE90cLPz5La70
-# pPNIme8dBWSY3UxrAzHatopEjuY8Q6Mllx4d4e2hHku3RIqVZr6V/4v4m02MlqGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUNmVZzil2d5Fb
+# naeLvNky4LDRC60wDQYJKoZIhvcNAQEBBQAEggEAI9U8K7heEsATzFKxpUW4UFVn
+# o4DHw1/HiWZpK1gA60RCJ0w3BrLVhxnfqJ8T5jteVEOZCRy05qBx3Yky5UXMZKRk
+# ETwcCYx4+z8V7PQEyjAxOXWvyO6xLAhU60LTw53w3iz+4ga6ZhNHVnga/lydTdBb
+# lPXPw6PG/vgz8gi+mWbK2TXDFfdP4ITzUOfQSY4qvY8VAI0KN/XkJ0YGAL9WVtAW
+# vVr85EjJ/CdPRR4j2j/8XQ08wM9uWWd8s43MUtwmsM9tKuBRUA5RwLtehUCOKlk6
+# TMH8aN+Hu2+bGAJ5/0VXA8cta3VxKKJxojUWlPzrxrBCDGkBcPRwOhEOwAn4z6GC
 # AgswggIHBgkqhkiG9w0BCQYxggH4MIIB9AIBATByMF4xCzAJBgNVBAYTAlVTMR0w
 # GwYDVQQKExRTeW1hbnRlYyBDb3Jwb3JhdGlvbjEwMC4GA1UEAxMnU3ltYW50ZWMg
 # VGltZSBTdGFtcGluZyBTZXJ2aWNlcyBDQSAtIEcyAhAOz/Q4yP6/NW4E2GqYGxpQ
 # MAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
-# DQEJBTEPFw0xNjA0MDIwMTMxMjZaMCMGCSqGSIb3DQEJBDEWBBRhAnlnUDHxdr08
-# aGTirjBrj8A/iDANBgkqhkiG9w0BAQEFAASCAQCRqIC23P/PykzLFwlkzCIYjA8G
-# ErEcjTGlh/73lzKTkplNXqAGWiorbpy+rsb33FPZfFXLC/DTANrLPJuMtItnipca
-# hgyElQl9UZKME0WytslJojqnuN6+N0BhNYqT6JCVp6GdoGBgsoLPwtkaAflBXNqj
-# rnCEGg2WJkt3ls2PKN/b7bAvi5Mhv6tcAVrKiKTRPztm9ukl91Z2g5hFgnm6CdEJ
-# eEyhKnZF3fndosDxQp4gKMzSXziv8V44sVvfQiG/AzGq8o0cC5Mhi/BLLoMIZGFj
-# 97DpJIEsy7D5asfxGU5rQIUPfIwfvDz4WaomP3XE4P7pknHE68PXfnzKPe0P
+# DQEJBTEPFw0xNjA0MDIwMTMxMjdaMCMGCSqGSIb3DQEJBDEWBBQWO1AsWZZJirmi
+# Qw2nk8bOBb5PmjANBgkqhkiG9w0BAQEFAASCAQCg7GfMB94t+1SZLyf8tCMPkXWY
+# XQxFUdFCksh/EXLR1a0iEE9Xnd2h8oMNhss8wgWBSR6afzPHyT3aIrLQ+qdPTlQr
+# nVT/EVTd4pWk0IW5P5RsqSQaa17ZOtOvdOFIdKGHySxq+UmWwC8ISWaxYFGb39x0
+# jY2dUXztdl3Qh8PUdObECLm5RkCT4rDowdcUMORjpzEPqw+yv/i9ngn+xtDdT1hi
+# prNTBLzMYzVR+QyrBFz7jWsMts8Gs8C9ipch0/s7leyea6nHKHtcxu01t/8QeuHK
+# b2j+hx+c2vlTTiEMIY26cDyu2c+DFaCzHJBWHGd3uJKqaly2GSauknzcPc/x
 # SIG # End signature block

@@ -20,114 +20,67 @@ See the License for the specific language governing permissions and
 limitations under the License.
 #############################################################################>
 
-[System.Diagnostics.DebuggerHidden()]
-param()
+<#
+.SYNOPSIS
+    Disables the breakpoint command.
+.DESCRIPTION
+    The Disable-EnterDebuggerCommand command disables the breakpoint command in your PowerShell environment.
+.PARAMETER WhatIf
+    Shows what would happen if the command was run unrestricted. The command is run, but any changes it would make are prevented, and text descriptions of those changes are written to the console instead.
+.PARAMETER Confirm
+    Prompts you for confirmation before any system changes are made using the command.
+.INPUTS
+    None
+.OUTPUTS
+    None
+.NOTES
+    When the breakpoint command is enabled, invoking breakpoint, bp, or Enter-Debugger may result in a script that is running stopping on a breakpoint on that line. For more information, invoke Get-Help breakpoint.
+.EXAMPLE
+    PS C:\> Disable-EnterDebuggerCommand
+    PS C:\> Get-Service w* | breakpoint {$_.Name -eq 'wuauserv'} | Select-Object -ExpandProperty Name
 
-#region Set up a module scope trap statement so that terminating errors actually terminate.
+    The first command disables the breakpoint command. When the next command is invoked, the services are output in the console and the breakpoint is skipped entirely.
+.EXAMPLE
+    PS C:\> Disable-EnterDebuggerCommand
+    PS C:\> & {'Before breakpoint'; breakpoint; 'After breakpoint'}
 
-trap {throw $_}
+    The first command disables the breakpoint command. When the next command is invoked, the string "Before breakpoint" will be output to the console, and then the string "After breakpoint" will be output to the console. The breakpoint command does nothing in this scenario.
+.LINK
+    Enable-EnterDebuggerCommand
+.LINK
+    breakpoint
+#>
+function Disable-EnterDebuggerCommand {
+    [CmdletBinding(SupportsShouldProcess=$true)]
+    [OutputType([System.Void])]
+    [System.Diagnostics.DebuggerHidden()]
+    param()
+    try {
+        #region Disable the breakpoint command breakpoint.
 
-#endregion
+        Disable-PSBreakpoint -Breakpoint $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint']
 
-#region Initialize the module.
-
-Invoke-Snippet -Name Module.Initialize
-
-#endregion
-
-#region Import public function definitions.
-
-Invoke-Snippet -Name ScriptFile.Import -Parameters @{
-    Path = Join-Path -Path $PSModuleRoot -ChildPath functions
-}
-
-#endregion
-
-#region Export commands defined in nested modules.
-
-. $PSModuleRoot\scripts\Export-BinaryModule.ps1
-
-#endregion
-
-#region Set up a hashtable for module-local storage of Enter-Debugger command breakpoint metadata.
-
-$EnterDebuggerCommandBreakpointMetadata = @{
-    # A flag that tracks whether or not the condition was met (for conditional breakpointing)
-    ConditionMet = $false
-
-    # The action that will be invoked when the breakpoint is hit
-    Action = {
-        [System.Diagnostics.DebuggerHidden()]
-        param()
-        if ($script:EnterDebuggerCommandBreakpointMetadata['ConditionMet']) {
-            break
-        }
-    }
-
-    # An event handler that will re-create the breakpoints used by this script if they are manually removed
-    OnBreakpointUpdated = {
-        param(
-            [System.Object]$sender,
-            [System.Management.Automation.BreakpointUpdatedEventArgs]$eventArgs
-        )
-        if (($eventArgs.UpdateType -eq [System.Management.Automation.BreakpointUpdateType]::Removed) -and
-            ($eventArgs.Breakpoint.Id -eq $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'].Id)) {
-            #region If the breakpoint command breakpoint was removed, re-create it and warn the user about the requirement.
-
-            $enabled = $eventArgs.Breakpoint.Enabled
-            Write-Warning -Message "The breakpoint command breakpoint is required by the DebugPx module and cannot be manually removed. You can disable this breakpoint by invoking ""Disable-EnterDebuggerCommand"", or you can remove it by invoking ""Remove-Module -Name DebugPx"". This breakpoint is currently $(if ($enabled) {'enabled'} else {'disabled'})."
-            $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'] = Set-PSBreakpoint -Command Enter-Debugger -Action $script:EnterDebuggerCommandBreakpointMetadata['Action'] -ErrorAction Stop
-            if (-not $enabled) {
-                Disable-EnterDebuggerCommand
-            }
-
-            #endregion
-            break
-        }
+        #endregion
+    } catch {
+        $PSCmdlet.ThrowTerminatingError($_)
     }
 }
 
-# Add the breakpoint itself separately since it references the action which must already exist in the hashtable
-$EnterDebuggerCommandBreakpointMetadata['Breakpoint'] = Set-PSBreakpoint -Command Enter-Debugger -Action $script:EnterDebuggerCommandBreakpointMetadata['Action'] -ErrorAction Stop
+Export-ModuleMember -Function Disable-EnterDebuggerCommand
 
-#endregion
-
-#region If we are not in an interactive session, disable the breakpoints by default.
-
-if (-not [System.Environment]::UserInteractive) {
-    Disable-EnterDebuggerCommand
+if (-not (Get-Alias -Name Disable-BreakpointCommand -ErrorAction Ignore)) {
+    New-Alias -Name Disable-BreakpointCommand -Value Disable-EnterDebuggerCommand
+    Export-ModuleMember -Alias Disable-BreakpointCommand
 }
-
-#endregion
-
-#region Activate the OnBreakpointUpdated event handler.
-
-$Host.Runspace.Debugger.add_BreakpointUpdated($EnterDebuggerCommandBreakpointMetadata['OnBreakpointUpdated'])
-
-#endregion
-
-#region Clean-up the module when it is removed.
-    
-$PSModule.OnRemove = {
-    #region Deactivate the OnBreakpointUpdated event handler.
-
-    $Host.Runspace.Debugger.remove_BreakpointUpdated($script:EnterDebuggerCommandBreakpointMetadata['OnBreakpointUpdated'])
-
-    #endregion
-
-    #region Remove the breakpoint that is used by this module.
-
-    Remove-PSBreakpoint -Breakpoint $script:EnterDebuggerCommandBreakpointMetadata['Breakpoint'] -ErrorAction Ignore
-
-    #endregion
+if (-not (Get-Alias -Name dbpc -ErrorAction Ignore)) {
+    New-Alias -Name dbpc -Value Disable-EnterDebuggerCommand
+    Export-ModuleMember -Alias dbpc
 }
-
-#endregion
 # SIG # Begin signature block
 # MIIXyQYJKoZIhvcNAQcCoIIXujCCF7YCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUAl1mF40iywFtsmPKB/WKjR4T
-# eBagghL8MIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUlqVSfRHf7gK9SJtHaK7OfBnD
+# OoegghL8MIID7jCCA1egAwIBAgIQfpPr+3zGTlnqS5p31Ab8OzANBgkqhkiG9w0B
 # AQUFADCBizELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTEUMBIG
 # A1UEBxMLRHVyYmFudmlsbGUxDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUVGhh
 # d3RlIENlcnRpZmljYXRpb24xHzAdBgNVBAMTFlRoYXd0ZSBUaW1lc3RhbXBpbmcg
@@ -233,22 +186,22 @@ $PSModule.OnRemove = {
 # bTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2lnbmlu
 # ZyBDQQIQDGszfu4uH1sJTotrjdG8+DAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIB
 # DDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEE
-# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUu37EPfwfiO3m
-# sRIKpwwNDWShSFcwDQYJKoZIhvcNAQEBBQAEggEAXM866AG43eoAb4ANjTKj7V68
-# +JL94h5obwzMDs47+7TWegn58+eIw+tTrg7qTLcnNaw0n/sjJ2JascqmvqZopCmT
-# Sku4M/bGiTL3AwhJc09oArlAHNuhkDPs/Qf62eOISG8QQwX9c3ytR9r51wJAgAAb
-# PBe+0z+tOJiUeiyJHxp0COhR5smcz/Sp2ZrxytiXceGET3I3lwOTAmj81M4GH3mq
-# HH2Pw8iQ+XwyFKoveGxP1GgHheRhnhvPOq95mBWv6YERuOMzS+dYE90cLPz5La70
-# pPNIme8dBWSY3UxrAzHatopEjuY8Q6Mllx4d4e2hHku3RIqVZr6V/4v4m02MlqGC
+# AYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUh8dcdXgo9SGw
+# VUO42gF6FpVYqOkwDQYJKoZIhvcNAQEBBQAEggEACSSDT1QdqD7XxV/WiYgeXN24
+# 1qB0oXLCsfuppEPHKvCIlgd0bobkisc4uWGhraNxSknHzpQnEW+6SFtUJSkz++Y1
+# LiXVx/t90ykwXJFK+AKkgxqoeY1ULYM2tvXb7moUH/+BUV/FuuSsAHFaXPpqMkl6
+# e2/sjb26MYGC409wHsKd09K2Pz5JjIngGv1oqW3ojjnfOzGE7LupJUZKjIHx9dV6
+# 6cyEY4gO2o6VKkq2e4HQwR3e0CRX6tNlLWOdUGBSbWoYTDZXStomiRI36TLx6xIj
+# 1qKk/SFBD9GDxfqvWXFlEDpHbpf8EKj/qHELV5oaOjT78Y4WRMhMjAuxdvNOlKGC
 # AgswggIHBgkqhkiG9w0BCQYxggH4MIIB9AIBATByMF4xCzAJBgNVBAYTAlVTMR0w
 # GwYDVQQKExRTeW1hbnRlYyBDb3Jwb3JhdGlvbjEwMC4GA1UEAxMnU3ltYW50ZWMg
 # VGltZSBTdGFtcGluZyBTZXJ2aWNlcyBDQSAtIEcyAhAOz/Q4yP6/NW4E2GqYGxpQ
 # MAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
-# DQEJBTEPFw0xNjA0MDIwMTMxMjZaMCMGCSqGSIb3DQEJBDEWBBRhAnlnUDHxdr08
-# aGTirjBrj8A/iDANBgkqhkiG9w0BAQEFAASCAQCRqIC23P/PykzLFwlkzCIYjA8G
-# ErEcjTGlh/73lzKTkplNXqAGWiorbpy+rsb33FPZfFXLC/DTANrLPJuMtItnipca
-# hgyElQl9UZKME0WytslJojqnuN6+N0BhNYqT6JCVp6GdoGBgsoLPwtkaAflBXNqj
-# rnCEGg2WJkt3ls2PKN/b7bAvi5Mhv6tcAVrKiKTRPztm9ukl91Z2g5hFgnm6CdEJ
-# eEyhKnZF3fndosDxQp4gKMzSXziv8V44sVvfQiG/AzGq8o0cC5Mhi/BLLoMIZGFj
-# 97DpJIEsy7D5asfxGU5rQIUPfIwfvDz4WaomP3XE4P7pknHE68PXfnzKPe0P
+# DQEJBTEPFw0xNjA0MDIwMTMxMjdaMCMGCSqGSIb3DQEJBDEWBBR/vCNaX8RrSnCa
+# i2GkhL2+YWmL/DANBgkqhkiG9w0BAQEFAASCAQCV6qCmJl6x3iH2P6FozunGcvxo
+# iX3sscxm9wCSnRxqFJYP1+aSPJk1dEOTI07LAeDe1jshSjvfc94HgGepJUUMJ/d4
+# N4rvjRr7aY/YL6gZNQieFlNRatyewHzygWRm//Ysju/t3khxA8fdLNHw0dRdQRIX
+# qyvHdEOvvgD5MPEJRRf25pquZ+j9IQfhX6J93OYUGWQbTay58qEYX1KCeZLRFEH6
+# d8MUAUnG+j7cvJoQwFB3rBshXMGfTmjMY9FgEW5TRfPuIWXBUonQgaCXGkylLk28
+# RHOs1+QChzCd8zee2hS2A6+G+2O+bxFo17EjHubcEyLPiYnCP6Lg2YMtx8mu
 # SIG # End signature block

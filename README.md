@@ -140,6 +140,31 @@ Enable-EnterDebuggerCommand or Disable-EnterDebuggerCommand commands. By default
 the breakpoint command is enabled when DebugPx is loaded in an interactive
 session.
 
+Another cmdlet that enhances debugging with breakpoints is Debug-Module. The
+Debug-Module command will enter the debugger at the root of the specified
+module scope (the script scope for the module). It will also change the current
+location to the module base folder on disk. This allows inspection of any
+internal script variables, invocation of commands internal to the module,
+and quick inspection/modification of the files associated with the module.
+
+To give Debug-Module a try, simply invoke the following command in PowerShell:
+
+```powershell
+# Change to the DebugPx base module folder and enter the debugger in the root
+# "script" scope inside of DebugPx
+Debug-Module -Name DebugPx
+```
+
+For more advanced debugging scenarios, you can look at the Get-CommandDebugMode
+and Set-CommandDebugMode functions. These two functions allow you to turn on
+or off the DebuggerHidden and DebuggerStepThrough attributes for individual
+commands or for entire modules. When working with command breakpoints and
+stepping through code, you may want to skip over entire script modules or
+functions that you are not debugging. This can be controlled with these two
+commands. To remove either of the DebuggerHidden and DebuggerStepThrough
+attributes for any command, either pass $false to the associated switch
+parameter or omit the switch parameter altogether (which defaults to false).
+
 The other focus area for this module is debug logging. Since version 1,
 PowerShell has had a command for debug logging: Write-Debug. Write-Debug will
 write a message to the debug stream on the host when it is used in advanced

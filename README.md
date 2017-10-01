@@ -1,4 +1,4 @@
-﻿## DebugPx
+## DebugPx
 
 ### Overview
 
@@ -14,6 +14,15 @@ these features do not provide, enabling a richer debugging experience.
 
 - PowerShell 3.0
 - SnippetPx module
+
+### Shortcuts
+
+- q: quit; exit the debug session.
+- h: help; list shortcuts.
+- c: continue; move to the next breakpoint.
+- k: show the call-stack
+- s, v, o: step into, step over, step out.
+- Enter: repeat the last command entered
 
 ### License and Copyright
 
